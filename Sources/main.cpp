@@ -14,9 +14,8 @@ void showMenu() {
         system("CLS");
         cout << "1) Wczytaj z pliku" << endl;
         cout << "2) Generuj losowo" << endl;
-        cout << "3) Algorytm podzialu" << endl;
-        cout << "3) Algorytm ograniczen" << endl;
-        cout << "5) Wyjdz" << endl<<endl;
+        cout << "3) Algorytm podzialu i ograniczeń" << endl;
+        cout << "4) Wyjdz" << endl<<endl;
 
         cin >> input;
         system("CLS");
@@ -36,14 +35,10 @@ void showMenu() {
                 break;
             }
             case 3:{
-                salesmanProblem -> bisectionMethod();
+                salesmanProblem->bisectionConstraintsMethod();
                 break;
             }
             case 4:{
-                salesmanProblem->constraintsMethod();
-                break;
-            }
-            case 5:{
                 delete salesmanProblem;
                 return;
             }

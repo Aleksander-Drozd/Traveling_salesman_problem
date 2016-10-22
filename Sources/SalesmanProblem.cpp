@@ -7,15 +7,15 @@
 #include "../Headers/SalesmanProblem.h"
 
 SalesmanProblem::SalesmanProblem(){
-    matrix = NULL;
+    costMatrix = NULL;
     size = 0;
 }
 
 SalesmanProblem::~SalesmanProblem(){
     for(int i=0; i<size; i++)
-        delete [] matrix[i];
+        delete [] costMatrix[i];
 
-    delete [] matrix;
+    delete [] costMatrix;
 }
 
 void SalesmanProblem::readFromFile(string filename) {
@@ -31,14 +31,14 @@ void SalesmanProblem::readFromFile(string filename) {
     }
 
     file >> size;
-    matrix = new int *[size];
+    costMatrix = new int *[size];
 
     for(int i=0; i<size; i++)
     {
-        matrix[i] = new int [size];
+        costMatrix[i] = new int [size];
         for(int j=0; j<size; j++){
             file >> cost;
-            matrix[i][j] = cost;
+            costMatrix[i][j] = cost;
         }
     }
     file.close();
@@ -49,11 +49,7 @@ void SalesmanProblem::randomGenerate() {
 
 }
 
-void SalesmanProblem::bisectionMethod() {
-
-}
-
-void SalesmanProblem::constraintsMethod() {
+void SalesmanProblem::bisectionConstraintsMethod() {
 
 }
 
@@ -70,10 +66,11 @@ void SalesmanProblem::display() {
     {
         cout<<i<<"| ";
         for(int j=0; j<size; j++){
-            cout<<matrix[i][j]<<" ";
+            cout<<costMatrix[i][j]<<" ";
         }
         cout<<endl;
     }
+    
     cout<<endl;
     system("pause");
 }

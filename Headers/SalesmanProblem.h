@@ -11,15 +11,14 @@ using namespace std;
 
 class SalesmanProblem {
 private:
-    int **matrix;
+    int **costMatrix;
     int size;
 public:
     SalesmanProblem();
     ~SalesmanProblem();
     void randomGenerate();
     void readFromFile(string);
-    void bisectionMethod();
-    void constraintsMethod();
+    void bisectionConstraintsMethod();
     void display();
 };
 
