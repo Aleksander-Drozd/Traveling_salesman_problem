@@ -7,14 +7,13 @@ using namespace std;
 void showMenu() {
     int input;
 
-    SalesmanProblem *salesmanProblem;
+    SalesmanProblem *salesmanProblem = new SalesmanProblem();;
 
     while(true){
-        salesmanProblem = new SalesmanProblem();
         system("CLS");
         cout << "1) Wczytaj z pliku" << endl;
         cout << "2) Generuj losowo" << endl;
-        cout << "3) Algorytm podzialu i ograniczeń" << endl;
+        cout << "3) Algorytm podzialu i ograniczen" << endl;
         cout << "4) Wyjdz" << endl<<endl;
 
         cin >> input;
@@ -43,7 +42,6 @@ void showMenu() {
                 return;
             }
         }
-        delete salesmanProblem;
     }
 }
 

@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <cstdlib>
+#include <climits>
 #include "../Headers/SalesmanProblem.h"
 
 SalesmanProblem::SalesmanProblem(){
@@ -50,16 +51,119 @@ void SalesmanProblem::randomGenerate() {
 }
 
 void SalesmanProblem::bisectionConstraintsMethod() {
+    int min, lowerLimit = 0;
+    int* minTab = new int[2*size];
 
+    //min szukane i odejmowane w wierszach
+    for(int i=0; i<size; i++){
+        min = INT_MAX;
+        for(int j=0; j<size; j++){
+            if(i != j && costMatrix[i][j] < min)
+                min = costMatrix[i][j];
+        }
+        cout<<min<<endl;
+        minTab[i] = min;
+        for(int j=0; j<size; j++){
+            if(i != j)
+                costMatrix[i][j] -= min;
+        }
+    }
+    display();
+
+    //min szukane i odejmowane w kolumnach
+    for(int i=0; i<size; i++){
+        min = INT_MAX;
+        for(int j=0; j<size; j++){
+            if(i != j && costMatrix[j][i] < min)
+                min = costMatrix[j][i];
+        }
+        cout<<min<<endl;
+        minTab[size + i] = min;
+        for(int j=0; j<size; j++){
+            if(i != j)
+                costMatrix[j][i] -= min;
+        }
+    }
+    display();
+
+    //sumowanie dolnego ograniczenia
+    for(int i=0; i<2*size; i++){
+        cout<<minTab[i]<<" ";
+        lowerLimit += minTab[i];
+    }
+    cout<<lowerLimit<<endl;
+
+    bool wasZero;
+    //szukanie min w wierszach bez zer*
+    for(int i=0; i<size; i++){
+        min = INT_MAX;
+        wasZero = false;
+        for(int j=0; j<size; j++){
+            if(i == j)
+                continue;
+            if(costMatrix[i][j] == 0){
+                if(wasZero == true){
+                    min = 0;
+                    continue;
+                }
+                else{
+                    wasZero = true;
+                    continue;
+                }
+            }
+            else if(costMatrix[i][j] < min)
+                    min = costMatrix[i][j];
+
+        }
+        cout<<min<<endl;
+        minTab[i] = min;
+    }
+
+    //szukanie min w kolumnach bez zer*
+    for(int i=0; i<size; i++){
+        min = INT_MAX;
+        wasZero = false;
+        for(int j=0; j<size; j++){
+            if(i == j)
+                continue;
+            if(costMatrix[j][i] == 0){
+                if(wasZero == true){
+                    min = 0;
+                    continue;
+                }
+                else{
+                    wasZero = true;
+                    continue;
+                }
+            }
+            else if(costMatrix[j][i] < min)
+                    min = costMatrix[j][i];
+
+        }
+        cout<<min<<endl;
+        minTab[size + i] = min;
+    }
+
+    int max = 0;
+    for(int i=0; i<2*size; i++){
+        cout<<minTab[i]<<" ";
+        if(minTab[i] > max)
+            max = minTab[i];
+    }
+    cout<<max<<endl<<endl;
+    display();
+
+    delete [] minTab;
+    system("pause");
 }
 
 void SalesmanProblem::display() {
     cout<<endl<<"   ";
     for(int i=0; i<size; i++)
-        cout<<i<<" ";
+        cout<<i<<"  ";
     cout<<endl<<"   ";
     for(int i=0; i<size; i++)
-        cout<<"- ";
+        cout<<"-- ";
     cout<<endl;
 
     for(int i=0; i<size; i++)
@@ -70,7 +174,7 @@ void SalesmanProblem::display() {
         }
         cout<<endl;
     }
-    
+
     cout<<endl;
     system("pause");
 }
