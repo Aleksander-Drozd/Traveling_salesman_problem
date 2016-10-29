@@ -53,6 +53,15 @@ void SalesmanProblem::randomGenerate() {
 void SalesmanProblem::bisectionConstraintsMethod() {
     int min, lowerLimit = 0;
     int* minTab = new int[2*size];
+    int** matrix = costMatrix;
+    int *rowsIndexes = new int[size];
+    int *columnIndexes = new int[size];
+    int rows, columns;
+
+    for(int i=0; i<size; i++){
+        rowsIndexes[i] = i;
+        columnIndexes[i] = i;
+    }
 
     //min szukane i odejmowane w wierszach
     for(int i=0; i<size; i++){
@@ -104,7 +113,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
             if(costMatrix[i][j] == 0){
                 if(wasZero == true){
                     min = 0;
-                    continue;
+                    break;
                 }
                 else{
                     wasZero = true;
@@ -113,7 +122,6 @@ void SalesmanProblem::bisectionConstraintsMethod() {
             }
             else if(costMatrix[i][j] < min)
                     min = costMatrix[i][j];
-
         }
         cout<<min<<endl;
         minTab[i] = min;
@@ -129,7 +137,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
             if(costMatrix[j][i] == 0){
                 if(wasZero == true){
                     min = 0;
-                    continue;
+                    break;
                 }
                 else{
                     wasZero = true;
@@ -171,6 +179,28 @@ void SalesmanProblem::display() {
         cout<<i<<"| ";
         for(int j=0; j<size; j++){
             cout<<costMatrix[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+
+    cout<<endl;
+    system("pause");
+}
+
+void SalesmanProblem::smartDisplay(int** matrix, int* rowIndexes, int rows, int* columnIndexes, int columns) {
+    cout<<endl<<"   ";
+    for(int i=0; i<rows; i++)
+        cout<<rowIndexes[i]<<"  ";
+    cout<<endl<<"   ";
+    for(int i=0; i<rows; i++)
+        cout<<"-- ";
+    cout<<endl;
+
+    for(int i=0; i<rows; i++)
+    {
+        cout<<columnIndexes[i]<<"| ";
+        for(int j=0; j<columns; j++){
+            cout<<matrix[i][j]<<" ";
         }
         cout<<endl;
     }

@@ -20,6 +20,7 @@ public:
     void readFromFile(string);
     void bisectionConstraintsMethod();
     void display();
+    void smartDisplay(int**, int*, int, int*, int);
 };
 
 
