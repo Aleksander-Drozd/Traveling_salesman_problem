@@ -21,6 +21,9 @@ public:
     void bisectionConstraintsMethod();
     void display();
     void smartDisplay(int**, int*, int, int*, int);
+private:
+    void downgradeMatrix(int**, int, int, int, int);
+    void downgradeArray(int*, int);
 };
 
 
