@@ -20,9 +20,9 @@ public:
     void readFromFile(string);
     void bisectionConstraintsMethod();
     void display();
-    void smartDisplay(int**, int*, int, int*, int);
+    void smartDisplay(int**, int*, int*, int);
 private:
-    int** downgradeMatrix(int**, int, int, int, int);
+    int** downgradeMatrix(int**, int, int, int);
     int* downgradeArray(int*, int, int);
 };
 

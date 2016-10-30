@@ -41,6 +41,10 @@ void showMenu() {
                 delete salesmanProblem;
                 return;
             }
+            case 5:{
+                salesmanProblem -> readFromFile("tsp10.txt");
+                salesmanProblem->bisectionConstraintsMethod();
+            }
         }
     }
 }

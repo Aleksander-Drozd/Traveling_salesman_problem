@@ -53,194 +53,196 @@ void SalesmanProblem::randomGenerate() {
 
 void SalesmanProblem::bisectionConstraintsMethod() {
     int min, lowerLimit = 0;
-    int *minTab = new int[2 * size];
+    int *minTab;
     int *rowsIndexes = new int[size];
     int *columnIndexes = new int[size];
-    int rows = size, columns = size;
+    int localSize = size;
+    int **matrix = new int*[size];
+
+    for(int i=0; i<size; i++) {
+        matrix[i] = new int [size];
+        memcpy(matrix[i], costMatrix[i], size*sizeof(int));
+    }
 
     for (int i = 0; i < size; i++) {
         rowsIndexes[i] = i;
         columnIndexes[i] = i;
     }
 
-    //min szukane i odejmowane w wierszach
-    for (int i = 0; i < size; i++) {
-        min = INT_MAX;
-        for (int j = 0; j < size; j++) {
-            if (i != j && costMatrix[i][j] < min)
-                min = costMatrix[i][j];
+    while(localSize != 2){
+        minTab = new int[2 * localSize];
+        //min szukane i odejmowane w wierszach
+        for (int i = 0; i < localSize; i++) {
+            min = INT_MAX;
+            for (int j = 0; j < localSize; j++) {
+                if (matrix[i][j] != -1 && matrix[i][j] < min)
+                    min = matrix[i][j];
+            }
+            cout << min << endl;
+            minTab[i] = min;
+            for (int j = 0; j < localSize; j++) {
+                if (matrix[i][j] != -1)
+                    matrix[i][j] -= min;
+            }
         }
-        cout << min << endl;
-        minTab[i] = min;
-        for (int j = 0; j < size; j++) {
-            if (i != j)
-                costMatrix[i][j] -= min;
-        }
-    }
-    display();
+        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
 
-    //min szukane i odejmowane w kolumnach
-    for (int i = 0; i < size; i++) {
-        min = INT_MAX;
-        for (int j = 0; j < size; j++) {
-            if (i != j && costMatrix[j][i] < min)
-                min = costMatrix[j][i];
+        //min szukane i odejmowane w kolumnach
+        for (int i = 0; i < localSize; i++) {
+            min = INT_MAX;
+            for (int j = 0; j < localSize; j++) {
+                if (matrix[j][i] != -1 && matrix[j][i] < min)
+                    min = matrix[j][i];
+            }
+            cout << min << endl;
+            minTab[localSize + i] = min;
+            for (int j = 0; j < localSize; j++) {
+                if (matrix[j][i] != -1)
+                    matrix[j][i] -= min;
+            }
         }
-        cout << min << endl;
-        minTab[size + i] = min;
-        for (int j = 0; j < size; j++) {
-            if (i != j)
-                costMatrix[j][i] -= min;
+        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
+
+        //sumowanie dolnego ograniczenia
+
+        for (int i = 0; i < 2 * localSize; i++) {
+            cout << minTab[i] << " ";
+            lowerLimit += minTab[i];
         }
-    }
-    display();
+        cout << "LB:" << lowerLimit << endl;
 
-    //sumowanie dolnego ograniczenia
-    for (int i = 0; i < 2 * size; i++) {
-        cout << minTab[i] << " ";
-        lowerLimit += minTab[i];
-    }
-    cout << lowerLimit << endl;
-
-    bool wasZero;
-    //szukanie min w wierszach bez zer*
-    for (int i = 0; i < size; i++) {
-        min = INT_MAX;
-        wasZero = false;
-        for (int j = 0; j < size; j++) {
-            if (i == j)
-                continue;
-            if (costMatrix[i][j] == 0) {
-                if (wasZero) {
-                    min = 0;
-                    break;
-                } else {
-                    wasZero = true;
+        bool wasZero;
+        //szukanie min w wierszach bez zer*
+        for (int i = 0; i < localSize; i++) {
+            min = INT_MAX;
+            wasZero = false;
+            for (int j = 0; j < localSize; j++) {
+                if (matrix[i][j] == -1)
                     continue;
-                }
-            } else if (costMatrix[i][j] < min)
-                min = costMatrix[i][j];
+                if (matrix[i][j] == 0) {
+                    if (wasZero) {
+                        min = 0;
+                        break;
+                    } else {
+                        wasZero = true;
+                        continue;
+                    }
+                } else if (matrix[i][j] < min)
+                    min = matrix[i][j];
+            }
+            minTab[i] = min;
         }
-        cout << min << endl;
-        minTab[i] = min;
-    }
 
-    //szukanie min w kolumnach bez zer*
-    for (int i = 0; i < size; i++) {
-        min = INT_MAX;
-        wasZero = false;
-        for (int j = 0; j < size; j++) {
-            if (i == j)
-                continue;
-            if (costMatrix[j][i] == 0) {
-                if (wasZero) {
-                    min = 0;
-                    break;
-                } else {
-                    wasZero = true;
+        //szukanie min w kolumnach bez zer*
+        for (int i = 0; i < localSize; i++) {
+            min = INT_MAX;
+            wasZero = false;
+            for (int j = 0; j < localSize; j++) {
+                if (matrix[j][i] == -1)
                     continue;
+                if (matrix[j][i] == 0) {
+                    if (wasZero) {
+                        min = 0;
+                        break;
+                    } else {
+                        wasZero = true;
+                        continue;
+                    }
+                } else if (matrix[j][i] < min)
+                    min = matrix[j][i];
+
+            }
+            minTab[localSize + i] = min;
+        }
+
+        int max = 0, maxIndex = 0, index = 0;
+        for (int i=0; i < 2 * localSize; i++) {
+            cout << minTab[i] << " ";
+            if (minTab[i] > max) {
+                max = minTab[i];
+                maxIndex = i;
+            }
+        }
+        cout << "Max: "<< max << endl;
+        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
+
+        int zeroIndex;
+
+        //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
+        if (maxIndex < localSize) {
+            //szukanie minimum w wierszu
+            for (int i = 0; i < localSize; i++) {
+                if(matrix[maxIndex][i] == max) {
+                    index = i;
+                    break;
                 }
-            } else if (costMatrix[j][i] < min)
-                min = costMatrix[j][i];
+            }
+            //szukanie zera w wierszu z minimum
+            for (int i = 0; i < localSize; i++) {
+                if(matrix[maxIndex][i] == 0){
+                    zeroIndex = i;
+                    break;
+                }
+            }
 
+            costMatrix[index][maxIndex] = -1;
+            downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
+            downgradeArray(rowsIndexes, localSize, maxIndex);
+            downgradeArray(columnIndexes, localSize, index);
+        } else {
+            //szukanie minimum w kolumnie
+            maxIndex -= localSize;
+            for (int i = 0; i < localSize; i++) {
+                if(matrix[i][maxIndex] == max) {
+                    index = i;
+                    break;
+                }
+            }
+            //szukanie zera w kolumnie z minimum
+            for (int i = 0; i < localSize; i++) {
+                if(matrix[i][maxIndex] == 0){
+                    zeroIndex = i;
+                    break;
+                }
+            }
+
+            costMatrix[maxIndex][index] = -1;
+            matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
+            rowsIndexes = downgradeArray(rowsIndexes, localSize, index);
+            columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
         }
-        cout << min << endl;
-        minTab[size + i] = min;
+
+        localSize--;
+        lowerLimit += max;
+
+        cout<<"Oryginal"<<endl;
+        display();
+        cout<<"Pomniejszona"<<endl;
+        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
+
+        delete [] minTab;
     }
 
-    int max = 0, maxIndex = 0, index;
-    for (int i = 0; i < 2 * size; i++) {
-        cout << minTab[i] << " ";
-        if (minTab[i] > max) {
-            max = minTab[i];
-            maxIndex = i;
-        }
-
-    }
-    cout << max << endl << endl;
-    display();
-
-    int zeroIndex;
-    int **matrix = new int*[size];
-
-    for(int i=0; i<rows; i++) {
-        matrix[i] = new int [size];
-        memcpy(matrix[i], costMatrix[i], size*sizeof(int));
-    }
-
-    //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
-    if (maxIndex < size) {
-        //szukanie minimum w wierszu
-        for (int i = 0; i < size; i++) {
-            if(costMatrix[maxIndex][i] == max) {
-                index = i;
-                break;
-            }
-        }
-        //szukanie zera w wierszu z minimum
-        for (int i = 0; i < size; i++) {
-            if(costMatrix[maxIndex][i] == 0){
-                zeroIndex = i;
-                break;
-            }
-        }
-
-        costMatrix[index][maxIndex] = -1;
-        downgradeMatrix(matrix, rows, columns, maxIndex, zeroIndex);
-        downgradeArray(rowsIndexes, rows, maxIndex);
-        downgradeArray(columnIndexes, columns, index);
-    } else {
-        //szukanie minimum w kolumnie
-        maxIndex -= size;
-        for (int i = 0; i < size; i++) {
-            if(costMatrix[i][maxIndex] == max) {
-                index = i;
-                break;
-            }
-        }
-        //szukanie zera w kolumnie z minimum
-        for (int i = 0; i < size; i++) {
-            if(costMatrix[i][maxIndex] == 0){
-                zeroIndex = i;
-                break;
-            }
-        }
-
-        costMatrix[maxIndex][index] = -1;
-        matrix = downgradeMatrix(matrix, rows, columns, zeroIndex, maxIndex);
-        rowsIndexes = downgradeArray(rowsIndexes, rows, index);
-        columnIndexes = downgradeArray(columnIndexes, columns, maxIndex);
-    }
-
-    rows--; columns--;
-    lowerLimit += max;
-
-    cout<<"Oryginal"<<endl;
-    display();
-    cout<<"Pomniejszona"<<endl;
-    smartDisplay(matrix, rowsIndexes, rows, columnIndexes, columns);
-
-    delete [] minTab;
     system("pause");
 }
 
-int** SalesmanProblem::downgradeMatrix(int** matrix, int rows, int columns, int rowIndex, int columnIndex) {
-    int** newMatrix = new int* [rows-1];
+int** SalesmanProblem::downgradeMatrix(int** matrix, int localSize, int rowIndex, int columnIndex) {
+    int** newMatrix = new int* [localSize-1];
     int x=0;
 
-    for(int i=0; i<rows; i++, x++)
+    for(int i=0; i<localSize; i++, x++)
     {
         if(i == rowIndex){
             x--;
             continue;
         }
 
-        newMatrix[x] = new int[columns - 1];
+        newMatrix[x] = new int[localSize - 1];
         memcpy(newMatrix[x], matrix[i], columnIndex*sizeof(int));
-        memcpy(newMatrix[x] + columnIndex, matrix[i] + columnIndex + 1, (columns - columnIndex - 1)*sizeof(int));
+        memcpy(newMatrix[x] + columnIndex, matrix[i] + columnIndex + 1, (localSize - columnIndex - 1)*sizeof(int));
     }
 
-    for(int i=0; i<rows; i++){
+    for(int i=0; i<localSize; i++){
         delete [] matrix[i];
     }
     delete [] matrix;
@@ -280,19 +282,19 @@ void SalesmanProblem::display() {
     system("pause");
 }
 
-void SalesmanProblem::smartDisplay(int** matrix, int* rowIndexes, int rows, int* columnIndexes, int columns) {
+void SalesmanProblem::smartDisplay(int** matrix, int* rowIndexes, int* columnIndexes, int localsize) {
     cout<<endl<<"   ";
-    for(int i=0; i<rows; i++)
+    for(int i=0; i<localsize; i++)
         cout<<columnIndexes[i]<<"  ";
     cout<<endl<<"   ";
-    for(int i=0; i<rows; i++)
+    for(int i=0; i<localsize; i++)
         cout<<"-- ";
     cout<<endl;
 
-    for(int i=0; i<rows; i++)
+    for(int i=0; i<localsize; i++)
     {
         cout<<rowIndexes[i]<<"| ";
-        for(int j=0; j<columns; j++){
+        for(int j=0; j<localsize; j++){
             cout<<matrix[i][j]<<" ";
         }
         cout<<endl;
