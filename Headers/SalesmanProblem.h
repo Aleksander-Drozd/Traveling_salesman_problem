@@ -22,8 +22,8 @@ public:
     void display();
     void smartDisplay(int**, int*, int, int*, int);
 private:
-    void downgradeMatrix(int**, int, int, int, int);
-    void downgradeArray(int*, int);
+    int** downgradeMatrix(int**, int, int, int, int);
+    int* downgradeArray(int*, int, int);
 };
 
 

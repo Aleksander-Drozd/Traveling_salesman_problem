@@ -56,7 +56,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
     int *minTab = new int[2 * size];
     int *rowsIndexes = new int[size];
     int *columnIndexes = new int[size];
-    int rows, columns;
+    int rows = size, columns = size;
 
     for (int i = 0; i < size; i++) {
         rowsIndexes[i] = i;
@@ -163,11 +163,9 @@ void SalesmanProblem::bisectionConstraintsMethod() {
     int zeroIndex;
     int **matrix = new int*[size];
 
-    for(int i=0; i<size; i++)
-    {
+    for(int i=0; i<rows; i++) {
         matrix[i] = new int [size];
-        for(int j=0; j<size; j++)
-            matrix[i][j] = costMatrix[i][j];
+        memcpy(matrix[i], costMatrix[i], size*sizeof(int));
     }
 
     //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
@@ -179,35 +177,56 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                 break;
             }
         }
-        //szukanie zera w kolumnie z minimum
+        //szukanie zera w wierszu z minimum
         for (int i = 0; i < size; i++) {
-            if(matrix[index][i] == 0){
+            if(costMatrix[maxIndex][i] == 0){
                 zeroIndex = i;
                 break;
             }
         }
+
         costMatrix[index][maxIndex] = -1;
-        //downgradeMatrix(matrix, rows, columns, )
-
+        downgradeMatrix(matrix, rows, columns, maxIndex, zeroIndex);
+        downgradeArray(rowsIndexes, rows, maxIndex);
+        downgradeArray(columnIndexes, columns, index);
     } else {
+        //szukanie minimum w kolumnie
+        maxIndex -= size;
         for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-
+            if(costMatrix[i][maxIndex] == max) {
+                index = i;
+                break;
             }
         }
+        //szukanie zera w kolumnie z minimum
+        for (int i = 0; i < size; i++) {
+            if(costMatrix[i][maxIndex] == 0){
+                zeroIndex = i;
+                break;
+            }
+        }
+
+        costMatrix[maxIndex][index] = -1;
+        matrix = downgradeMatrix(matrix, rows, columns, zeroIndex, maxIndex);
+        rowsIndexes = downgradeArray(rowsIndexes, rows, index);
+        columnIndexes = downgradeArray(columnIndexes, columns, maxIndex);
     }
 
+    rows--; columns--;
+    lowerLimit += max;
 
-
-
+    cout<<"Oryginal"<<endl;
+    display();
+    cout<<"Pomniejszona"<<endl;
+    smartDisplay(matrix, rowsIndexes, rows, columnIndexes, columns);
 
     delete [] minTab;
     system("pause");
 }
 
-void SalesmanProblem::downgradeMatrix(int** matrix, int rows, int columns, int rowIndex, int columnIndex) {
+int** SalesmanProblem::downgradeMatrix(int** matrix, int rows, int columns, int rowIndex, int columnIndex) {
     int** newMatrix = new int* [rows-1];
-    int x=0 ,y;
+    int x=0;
 
     for(int i=0; i<rows; i++, x++)
     {
@@ -218,7 +237,7 @@ void SalesmanProblem::downgradeMatrix(int** matrix, int rows, int columns, int r
 
         newMatrix[x] = new int[columns - 1];
         memcpy(newMatrix[x], matrix[i], columnIndex*sizeof(int));
-        memcpy(newMatrix[x] + columnIndex, matrix[i] + columnIndex + 1, (columns - columnIndex)*sizeof(int));
+        memcpy(newMatrix[x] + columnIndex, matrix[i] + columnIndex + 1, (columns - columnIndex - 1)*sizeof(int));
     }
 
     for(int i=0; i<rows; i++){
@@ -226,11 +245,17 @@ void SalesmanProblem::downgradeMatrix(int** matrix, int rows, int columns, int r
     }
     delete [] matrix;
 
-    matrix = newMatrix;
+    return newMatrix;
 }
 
-void SalesmanProblem::downgradeArray(int *array, int index) {
+int* SalesmanProblem::downgradeArray(int *array, int size, int index) {
+    int* newArray = new int[size-1];
 
+    memcpy(newArray, array, index* sizeof(int));
+    memcpy(newArray + index, array + index + 1, (size - index - 1)*sizeof(int));
+
+    delete [] array;
+    return newArray;
 }
 
 void SalesmanProblem::display() {
@@ -258,7 +283,7 @@ void SalesmanProblem::display() {
 void SalesmanProblem::smartDisplay(int** matrix, int* rowIndexes, int rows, int* columnIndexes, int columns) {
     cout<<endl<<"   ";
     for(int i=0; i<rows; i++)
-        cout<<rowIndexes[i]<<"  ";
+        cout<<columnIndexes[i]<<"  ";
     cout<<endl<<"   ";
     for(int i=0; i<rows; i++)
         cout<<"-- ";
@@ -266,7 +291,7 @@ void SalesmanProblem::smartDisplay(int** matrix, int* rowIndexes, int rows, int*
 
     for(int i=0; i<rows; i++)
     {
-        cout<<columnIndexes[i]<<"| ";
+        cout<<rowIndexes[i]<<"| ";
         for(int j=0; j<columns; j++){
             cout<<matrix[i][j]<<" ";
         }
