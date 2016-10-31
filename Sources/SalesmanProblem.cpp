@@ -52,7 +52,7 @@ void SalesmanProblem::randomGenerate() {
 }
 
 void SalesmanProblem::bisectionConstraintsMethod() {
-    int min, lowerLimit = 0, zeroIndex;
+    int min, lowerLimit = 0, zeroIndex = 0;
     int *minTab;
     int *rowsIndexes = new int[size];
     int *columnIndexes = new int[size];
@@ -200,7 +200,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
             costMatrix[rowsIndexes[zeroIndex]][columnIndexes[maxIndex]] = -1;
             matrix = downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
             rowsIndexes = downgradeArray(rowsIndexes, localSize, maxIndex);
-            columnIndexes = downgradeArray(columnIndexes, localSize, index);
+            columnIndexes = downgradeArray(columnIndexes, localSize, zeroIndex);
         } else {
             //szukanie minimum w kolumnie
             maxIndex -= localSize;
@@ -224,7 +224,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
             path[counter] = connection;
             costMatrix[rowsIndexes[maxIndex]][columnIndexes[zeroIndex]] = -1;
             matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
-            rowsIndexes = downgradeArray(rowsIndexes, localSize, index);
+            rowsIndexes = downgradeArray(rowsIndexes, localSize, zeroIndex);
             columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
         }
 
