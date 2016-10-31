@@ -52,12 +52,21 @@ void SalesmanProblem::randomGenerate() {
 }
 
 void SalesmanProblem::bisectionConstraintsMethod() {
-    int min, lowerLimit = 0;
+    int min, lowerLimit = 0, zeroIndex;
     int *minTab;
     int *rowsIndexes = new int[size];
     int *columnIndexes = new int[size];
     int localSize = size;
     int **matrix = new int*[size];
+    int counter = 0;
+
+    struct Connection{
+        int c1;
+        int c2;
+    };
+
+    Connection* connection;
+    Connection** path = new Connection*[size-2];
 
     for(int i=0; i<size; i++) {
         matrix[i] = new int [size];
@@ -164,9 +173,8 @@ void SalesmanProblem::bisectionConstraintsMethod() {
             }
         }
         cout << "Max: "<< max << endl;
-        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
 
-        int zeroIndex;
+        connection = new Connection();
 
         //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
         if (maxIndex < localSize) {
@@ -185,10 +193,14 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                 }
             }
 
-            costMatrix[index][maxIndex] = -1;
-            downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
-            downgradeArray(rowsIndexes, localSize, maxIndex);
-            downgradeArray(columnIndexes, localSize, index);
+            connection -> c1 = rowsIndexes[maxIndex];
+            connection -> c2 = columnIndexes[zeroIndex];
+            path[counter] = connection;
+            cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
+            costMatrix[rowsIndexes[zeroIndex]][columnIndexes[maxIndex]] = -1;
+            matrix = downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
+            rowsIndexes = downgradeArray(rowsIndexes, localSize, maxIndex);
+            columnIndexes = downgradeArray(columnIndexes, localSize, index);
         } else {
             //szukanie minimum w kolumnie
             maxIndex -= localSize;
@@ -206,7 +218,11 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                 }
             }
 
-            costMatrix[maxIndex][index] = -1;
+            connection -> c1 = rowsIndexes[zeroIndex];
+            connection -> c2 = columnIndexes[maxIndex];
+            cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
+            path[counter] = connection;
+            costMatrix[rowsIndexes[maxIndex]][columnIndexes[zeroIndex]] = -1;
             matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
             rowsIndexes = downgradeArray(rowsIndexes, localSize, index);
             columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
@@ -221,6 +237,16 @@ void SalesmanProblem::bisectionConstraintsMethod() {
         smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
 
         delete [] minTab;
+        counter++;
+    }
+
+    for(int i=0; i<localSize; i++)
+        delete [] matrix[i];
+
+    delete [] matrix;
+
+    for(int i=0; i<size-2; i++){
+        cout<<"("<<path[i] -> c1<<", "<<path[i] -> c2<<")"<<endl;
     }
 
     system("pause");
@@ -291,8 +317,7 @@ void SalesmanProblem::smartDisplay(int** matrix, int* rowIndexes, int* columnInd
         cout<<"-- ";
     cout<<endl;
 
-    for(int i=0; i<localsize; i++)
-    {
+    for(int i=0; i<localsize; i++) {
         cout<<rowIndexes[i]<<"| ";
         for(int j=0; j<localsize; j++){
             cout<<matrix[i][j]<<" ";
