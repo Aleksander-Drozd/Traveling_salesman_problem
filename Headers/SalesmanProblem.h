@@ -13,12 +13,19 @@ class SalesmanProblem {
 private:
     int **costMatrix;
     int size;
+    struct Connection{
+        int c1;
+        int c2;
+    };
 public:
     SalesmanProblem();
     ~SalesmanProblem();
     void randomGenerate();
     void readFromFile(string);
     void bisectionConstraintsMethod();
+    void updateTab(int*, int, int);
+    int findMax(int*, int, int*);
+    int findMaxIndex(int*, int, int, int);
     void display();
     void smartDisplay(int**, int*, int*, int);
 private:

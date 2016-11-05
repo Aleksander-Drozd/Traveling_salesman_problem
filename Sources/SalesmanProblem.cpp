@@ -58,12 +58,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
     int *columnIndexes = new int[size];
     int localSize = size;
     int **matrix = new int*[size];
-    int counter = 0;
-
-    struct Connection{
-        int c1;
-        int c2;
-    };
+    int pathSize = 0;
 
     Connection* connection;
     Connection** path = new Connection*[size-2];
@@ -164,69 +159,77 @@ void SalesmanProblem::bisectionConstraintsMethod() {
             minTab[localSize + i] = min;
         }
 
-        int max = 0, maxIndex = 0, index = 0;
-        for (int i=0; i < 2 * localSize; i++) {
-            cout << minTab[i] << " ";
-            if (minTab[i] > max) {
-                max = minTab[i];
-                maxIndex = i;
-            }
-        }
-        cout << "Max: "<< max << endl;
+        int max, maxIndex = 0, displacement = 0;
+        bool connectionFound = false;
+
+        max = findMax(minTab, 2*localSize, &maxIndex);
 
         connection = new Connection();
 
-        //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
-        if (maxIndex < localSize) {
-            //szukanie minimum w wierszu
-            for (int i = 0; i < localSize; i++) {
-                if(matrix[maxIndex][i] == max) {
-                    index = i;
-                    break;
+        while(!connectionFound)
+            //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
+            if (maxIndex < localSize) {
+                //szukanie zera w wierszu z minimum
+                for (int i = 0; i < localSize; i++) {
+                    if(matrix[maxIndex][i] == 0){
+                        zeroIndex = i;
+                        break;
+                    }
                 }
-            }
-            //szukanie zera w wierszu z minimum
-            for (int i = 0; i < localSize; i++) {
-                if(matrix[maxIndex][i] == 0){
-                    zeroIndex = i;
-                    break;
-                }
-            }
 
-            connection -> c1 = rowsIndexes[maxIndex];
-            connection -> c2 = columnIndexes[zeroIndex];
-            path[counter] = connection;
-            cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
-            costMatrix[rowsIndexes[zeroIndex]][columnIndexes[maxIndex]] = -1;
-            matrix = downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
-            rowsIndexes = downgradeArray(rowsIndexes, localSize, maxIndex);
-            columnIndexes = downgradeArray(columnIndexes, localSize, zeroIndex);
-        } else {
-            //szukanie minimum w kolumnie
-            maxIndex -= localSize;
-            for (int i = 0; i < localSize; i++) {
-                if(matrix[i][maxIndex] == max) {
-                    index = i;
-                    break;
+                if(costMatrix[columnIndexes[zeroIndex]][rowsIndexes[maxIndex]] != -1)
+                    connectionFound = true;
+                else{
+                    displacement++;
+                    maxIndex = findMaxIndex(minTab, localSize*2, max, displacement);
+                    if(maxIndex == -1){
+                        updateTab(minTab, 2*localSize, max);
+                        displacement = 0;
+                        max  = findMax(minTab, 2*localSize, &maxIndex);
+                    }
+                    continue;
                 }
-            }
-            //szukanie zera w kolumnie z minimum
-            for (int i = 0; i < localSize; i++) {
-                if(matrix[i][maxIndex] == 0){
-                    zeroIndex = i;
-                    break;
-                }
-            }
 
-            connection -> c1 = rowsIndexes[zeroIndex];
-            connection -> c2 = columnIndexes[maxIndex];
-            cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
-            path[counter] = connection;
-            costMatrix[rowsIndexes[maxIndex]][columnIndexes[zeroIndex]] = -1;
-            matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
-            rowsIndexes = downgradeArray(rowsIndexes, localSize, zeroIndex);
-            columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
-        }
+                connection -> c1 = rowsIndexes[maxIndex];
+                connection -> c2 = columnIndexes[zeroIndex];
+                path[pathSize] = connection;
+                cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
+                costMatrix[rowsIndexes[zeroIndex]][columnIndexes[maxIndex]] = -1;
+                matrix = downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
+                rowsIndexes = downgradeArray(rowsIndexes, localSize, maxIndex);
+                columnIndexes = downgradeArray(columnIndexes, localSize, zeroIndex);
+            } else {
+                maxIndex -= localSize;
+                //szukanie zera w kolumnie z minimum
+                for (int i = 0; i < localSize; i++) {
+                    if(matrix[i][maxIndex] == 0){
+                        zeroIndex = i;
+                        break;
+                    }
+                }
+
+                if(costMatrix[columnIndexes[maxIndex]][rowsIndexes[zeroIndex]] != -1)
+                    connectionFound = true;
+                else{
+                    displacement++;
+                    maxIndex = findMaxIndex(minTab, localSize*2, max, displacement);
+                    if(maxIndex == -1){
+                        updateTab(minTab, 2*localSize, max);
+                        displacement = 0;
+                        max  = findMax(minTab, 2*localSize, &maxIndex);
+                    }
+                    continue;
+                }
+
+                connection -> c1 = rowsIndexes[zeroIndex];
+                connection -> c2 = columnIndexes[maxIndex];
+                cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
+                path[pathSize] = connection;
+                costMatrix[rowsIndexes[maxIndex]][columnIndexes[zeroIndex]] = -1;
+                matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
+                rowsIndexes = downgradeArray(rowsIndexes, localSize, zeroIndex);
+                columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
+            }
 
         localSize--;
         lowerLimit += max;
@@ -237,7 +240,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
         smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
 
         delete [] minTab;
-        counter++;
+        pathSize++;
     }
 
     for(int i=0; i<localSize; i++)
@@ -250,6 +253,38 @@ void SalesmanProblem::bisectionConstraintsMethod() {
     }
 
     system("pause");
+}
+
+int SalesmanProblem::findMaxIndex(int* tab, int size, int max, int displacement) {
+    for(int i=0; i<size; i++){
+        if(tab[i] == max)
+            if(displacement == 0)
+                return i;
+            else
+                displacement--;
+    }
+    return -1;
+}
+
+int SalesmanProblem::findMax(int* tab, int size, int *maxIndex) {
+    int max = -1;
+
+    for (int i=0; i<size; i++) {
+        cout << tab[i] << " ";
+        if (tab[i] > max) {
+            max = tab[i];
+            *maxIndex = i;
+        }
+    }
+    cout << "Max: "<< max << endl;
+    return max;
+}
+
+void SalesmanProblem::updateTab(int* tab, int size, int value) {
+    for(int i=0; i<size; i++){
+        if(tab[i] == value)
+            tab[i] = -1;
+    }
 }
 
 int** SalesmanProblem::downgradeMatrix(int** matrix, int localSize, int rowIndex, int columnIndex) {
