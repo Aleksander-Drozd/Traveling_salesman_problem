@@ -247,11 +247,15 @@ void SalesmanProblem::bisectionConstraintsMethod() {
         delete [] matrix[i];
 
     delete [] matrix;
+    int sum = 0;
 
     for(int i=0; i<size-2; i++){
-        cout<<"("<<path[i] -> c1<<", "<<path[i] -> c2<<")"<<endl;
+        cout<<"("<<path[i] -> c1<<", "<<path[i] -> c2<<") - ";
+        cout<<costMatrix[path[i] -> c1][path[i] -> c2]<<endl;
+        sum += costMatrix[path[i] -> c1][path[i] -> c2];
     }
 
+    cout<<"Calkowity koszt drogi = "<<sum<<endl;
     system("pause");
 }
 
