@@ -26,6 +26,7 @@ public:
     void updateTab(int*, int, int);
     int findMax(int*, int, int*);
     int findMaxIndex(int*, int, int, int);
+    void blockConnection(int**, int, int*, int*, int, int);
     void display();
     void smartDisplay(int**, int*, int*, int);
 private:

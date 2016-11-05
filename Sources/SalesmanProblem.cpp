@@ -195,6 +195,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                 path[pathSize] = connection;
                 cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
                 costMatrix[columnIndexes[zeroIndex]][rowsIndexes[maxIndex]] = -1;
+                blockConnection(matrix, localSize, rowsIndexes, columnIndexes, rowsIndexes[maxIndex], columnIndexes[zeroIndex]);
                 matrix = downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
                 rowsIndexes = downgradeArray(rowsIndexes, localSize, maxIndex);
                 columnIndexes = downgradeArray(columnIndexes, localSize, zeroIndex);
@@ -226,6 +227,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                 cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
                 path[pathSize] = connection;
                 costMatrix[columnIndexes[maxIndex]][rowsIndexes[zeroIndex]] = -1;
+                blockConnection(matrix, localSize, rowsIndexes, columnIndexes, rowsIndexes[zeroIndex], columnIndexes[maxIndex]);
                 matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
                 rowsIndexes = downgradeArray(rowsIndexes, localSize, zeroIndex);
                 columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
@@ -257,6 +259,20 @@ void SalesmanProblem::bisectionConstraintsMethod() {
 
     cout<<"Calkowity koszt drogi = "<<sum<<endl;
     system("pause");
+}
+
+void SalesmanProblem::blockConnection(int** matrix, int size, int* rTab, int* cTab, int row, int column) {
+    int r = -1, c = -1;
+
+    for(int i=0; i<size; i++){
+        if(rTab[i] == column)
+            r = i;
+        if(cTab[i] == row)
+            c = i;
+    }
+    if(r < 0 || c < 0)
+        return;
+    matrix[r][c] = -1;
 }
 
 int SalesmanProblem::findMaxIndex(int* tab, int size, int max, int displacement) {
