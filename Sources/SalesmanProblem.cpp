@@ -177,7 +177,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                     }
                 }
 
-                if(costMatrix[columnIndexes[zeroIndex]][rowsIndexes[maxIndex]] != -1)
+                if(costMatrix[rowsIndexes[maxIndex]][columnIndexes[zeroIndex]] != -1)
                     connectionFound = true;
                 else{
                     displacement++;
@@ -194,7 +194,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                 connection -> c2 = columnIndexes[zeroIndex];
                 path[pathSize] = connection;
                 cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
-                costMatrix[rowsIndexes[zeroIndex]][columnIndexes[maxIndex]] = -1;
+                costMatrix[columnIndexes[zeroIndex]][rowsIndexes[maxIndex]] = -1;
                 matrix = downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
                 rowsIndexes = downgradeArray(rowsIndexes, localSize, maxIndex);
                 columnIndexes = downgradeArray(columnIndexes, localSize, zeroIndex);
@@ -208,7 +208,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                     }
                 }
 
-                if(costMatrix[columnIndexes[maxIndex]][rowsIndexes[zeroIndex]] != -1)
+                if(costMatrix[rowsIndexes[zeroIndex]][columnIndexes[maxIndex]] != -1)
                     connectionFound = true;
                 else{
                     displacement++;
@@ -225,7 +225,7 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                 connection -> c2 = columnIndexes[maxIndex];
                 cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
                 path[pathSize] = connection;
-                costMatrix[rowsIndexes[maxIndex]][columnIndexes[zeroIndex]] = -1;
+                costMatrix[columnIndexes[maxIndex]][rowsIndexes[zeroIndex]] = -1;
                 matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
                 rowsIndexes = downgradeArray(rowsIndexes, localSize, zeroIndex);
                 columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
