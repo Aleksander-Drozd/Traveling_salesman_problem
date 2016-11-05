@@ -20,7 +20,7 @@ private:
 public:
     SalesmanProblem();
     ~SalesmanProblem();
-    void randomGenerate();
+    void generate(int);
     void readFromFile(string);
     void bisectionConstraintsMethod();
     void updateTab(int*, int, int);

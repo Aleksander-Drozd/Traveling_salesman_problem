@@ -5,7 +5,7 @@
 using namespace std;
 
 void showMenu() {
-    int input;
+    int input, citesQuantity;
 
     SalesmanProblem *salesmanProblem = new SalesmanProblem();;
 
@@ -30,7 +30,9 @@ void showMenu() {
                 break;
             }
             case 2:{
-                salesmanProblem -> randomGenerate();
+                cout<<"Ilosc miast: ";
+                cin>>citesQuantity;
+                salesmanProblem -> generate(citesQuantity);
                 break;
             }
             case 3:{
