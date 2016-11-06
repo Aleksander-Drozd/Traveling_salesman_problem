@@ -62,7 +62,7 @@ void test(){
 
     int loops = 1;
     double time = 0;
-    int citiesQuantity = 20;
+    int citiesQuantity = 32;
 
     for(int i=0; i<loops; i++)
     {
