@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <climits>
 #include <cstring>
+#include <ctime>
 #include "../Headers/SalesmanProblem.h"
 
 SalesmanProblem::SalesmanProblem(){
@@ -49,6 +50,7 @@ void SalesmanProblem::readFromFile(string filename) {
 
 void SalesmanProblem::generate(int citiesQuantity) {
     int cost;
+    srand(time(NULL));
 
     size = citiesQuantity;
     costMatrix = new int *[size];
@@ -57,14 +59,14 @@ void SalesmanProblem::generate(int citiesQuantity) {
         costMatrix[i] = new int [size];
 
     for(int i=0; i<size; i++) {
-        for(int j=i; j<size; j++){
-            cost = rand()%100 + 1;
+        for(int j=i+1; j<size; j++){
+            cost = rand()%120 + 1;
             costMatrix[i][j] = cost;
             costMatrix[j][i] = cost;
         }
         costMatrix[i][i] = -1;
     }
-    display();
+//    display();
 }
 
 void SalesmanProblem::bisectionConstraintsMethod() {
@@ -297,7 +299,7 @@ void SalesmanProblem::updateTab(int* tab, int size, int value) {
 
 int** SalesmanProblem::downgradeMatrix(int** matrix, int localSize, int rowIndex, int columnIndex) {
     int** newMatrix = new int* [localSize-1];
-    int x=0;
+    int x = 0;
 
     for(int i=0; i<localSize; i++, x++)
     {

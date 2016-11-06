@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <windows.h>
 #include "../Headers/SalesmanProblem.h"
 
 using namespace std;
@@ -51,7 +52,42 @@ void showMenu() {
     }
 }
 
+void test(){
+    SalesmanProblem* TSP;
+
+    LARGE_INTEGER clockFrequency;
+    QueryPerformanceFrequency(&clockFrequency);
+    LARGE_INTEGER startTime, endTime;
+    LARGE_INTEGER delta;
+
+    int loops = 1;
+    double time = 0;
+    int citiesQuantity = 20;
+
+    for(int i=0; i<loops; i++)
+    {
+        TSP = new SalesmanProblem();
+        TSP -> generate(citiesQuantity);
+
+        QueryPerformanceCounter(&startTime);
+        TSP -> bisectionConstraintsMethod();
+        QueryPerformanceCounter(&endTime);
+        delta.QuadPart = endTime.QuadPart - startTime.QuadPart;
+        time += ((double)delta.QuadPart) / clockFrequency.QuadPart;
+
+        delete TSP;
+    }
+
+    time = time/loops;
+
+    cout<<"Algorytm podzialu i ograniczen: "<<endl<<endl;;
+    cout<<"Ilosc miast = "<<citiesQuantity<<endl<<endl;
+    cout<<time<<endl;
+    system("pause");
+}
+
 int main() {
+//    test();
     showMenu();
     return 0;
 }
