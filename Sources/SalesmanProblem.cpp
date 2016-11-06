@@ -12,6 +12,7 @@
 SalesmanProblem::SalesmanProblem(){
     costMatrix = NULL;
     size = 0;
+    graph = NULL;
 }
 
 SalesmanProblem::~SalesmanProblem(){

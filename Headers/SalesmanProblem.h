@@ -6,6 +6,7 @@
 #define TRAVELING_SALESMAN_PROBLEM_SALESMANPROBLEM_H
 
 #include <iostream>
+#include "../Headers/Graph.h"
 
 using namespace std;
 
@@ -13,10 +14,12 @@ class SalesmanProblem {
 private:
     int **costMatrix;
     int size;
+    Graph graph;
     struct Connection{
         int c1;
         int c2;
     };
+
 public:
     SalesmanProblem();
     ~SalesmanProblem();
