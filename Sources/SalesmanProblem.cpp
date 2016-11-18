@@ -91,40 +91,16 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
 
     while(localSize != 2){
         minTab = new int[2 * localSize];
+
         //min szukane i odejmowane w wierszach
-        for (int i = 0; i < localSize; i++) {
-            min = INT_MAX;
-            for (int j = 0; j < localSize; j++) {
-                if (matrix[i][j] != -1 && matrix[i][j] < min)
-                    min = matrix[i][j];
-            }
-            cout << min << endl;
-            minTab[i] = min;
-            for (int j = 0; j < localSize; j++) {
-                if (matrix[i][j] != -1)
-                    matrix[i][j] -= min;
-            }
-        }
+        reduceRows(matrix, localSize, minTab);
         smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
 
         //min szukane i odejmowane w kolumnach
-        for (int i = 0; i < localSize; i++) {
-            min = INT_MAX;
-            for (int j = 0; j < localSize; j++) {
-                if (matrix[j][i] != -1 && matrix[j][i] < min)
-                    min = matrix[j][i];
-            }
-            cout << min << endl;
-            minTab[localSize + i] = min;
-            for (int j = 0; j < localSize; j++) {
-                if (matrix[j][i] != -1)
-                    matrix[j][i] -= min;
-            }
-        }
+        reduceColumns(matrix, localSize, minTab);
         smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
 
         //sumowanie dolnego ograniczenia
-
         for (int i = 0; i < 2 * localSize; i++) {
             cout << minTab[i] << " ";
             lowerLimit += minTab[i];
@@ -223,8 +199,8 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         lowerLimit += max;
         path[pathSize] = connection;
 
-        cout<<"Oryginal"<<endl;
-        display();
+        //cout<<"Oryginal"<<endl;
+        //display();
         cout<<"Pomniejszona"<<endl;
         smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
 
@@ -252,7 +228,40 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
 }
 
 void SalesmanProblem::reduceRows(int** matrix, int size, int* minTab){
+    int min;
 
+    for (int i = 0; i < size; i++) {
+        min = INT_MAX;
+        for (int j = 0; j < size; j++) {
+            if (matrix[i][j] != -1 && matrix[i][j] < min)
+                min = matrix[i][j];
+        }
+        cout << min << endl;
+        minTab[i] = min;
+
+        for (int j = 0; j < size; j++) {
+            if (matrix[i][j] != -1)
+                matrix[i][j] -= min;
+        }
+    }
+}
+
+void SalesmanProblem::reduceColumns(int** matrix, int size, int* minTab){
+    int min;
+
+    for (int i = 0; i < size; i++) {
+        min = INT_MAX;
+        for (int j = 0; j < size; j++) {
+            if (matrix[j][i] != -1 && matrix[j][i] < min)
+                min = matrix[j][i];
+        }
+        cout << min << endl;
+        minTab[size + i] = min;
+        for (int j = 0; j < size; j++) {
+            if (matrix[j][i] != -1)
+                matrix[j][i] -= min;
+        }
+    }
 }
 
 void SalesmanProblem::blockConnection(int** matrix, int size, int* rTab, int* cTab, int row, int column) {

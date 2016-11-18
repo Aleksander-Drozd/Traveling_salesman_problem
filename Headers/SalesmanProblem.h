@@ -27,6 +27,7 @@ public:
     void readFromFile(string);
     void branchAndBoundAlgorithm();
     void reduceRows(int**, int, int*);
+    void reduceColumns(int**, int, int*);
     void updateTab(int*, int, int);
     int findMax(int*, int, int*);
     int findMaxIndex(int*, int, int, int);
