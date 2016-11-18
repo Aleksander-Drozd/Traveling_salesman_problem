@@ -6,26 +6,27 @@
 #define TRAVELING_SALESMAN_PROBLEM_SALESMANPROBLEM_H
 
 #include <iostream>
-#include "../Headers/Graph.h"
+#include "PriorityQueue.h"
 
 using namespace std;
 
 class SalesmanProblem {
-private:
-    int **costMatrix;
-    int size;
-    Graph graph;
+public:
     struct Connection{
         int c1;
         int c2;
     };
-
+private:
+    int **costMatrix;
+    int size;
+    PriorityQueue* queue;
 public:
     SalesmanProblem();
     ~SalesmanProblem();
     void generate(int);
     void readFromFile(string);
-    void bisectionConstraintsMethod();
+    void branchAndBoundAlgorithm();
+    void reduceRows(int**, int, int*);
     void updateTab(int*, int, int);
     int findMax(int*, int, int*);
     int findMaxIndex(int*, int, int, int);

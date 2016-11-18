@@ -1,7 +1,3 @@
-//
-// Created by John on 12-Oct-16.
-//
-
 #include <fstream>
 #include <cstdlib>
 #include <climits>
@@ -12,7 +8,7 @@
 SalesmanProblem::SalesmanProblem(){
     costMatrix = NULL;
     size = 0;
-    graph = NULL;
+    queue = new PriorityQueue();
 }
 
 SalesmanProblem::~SalesmanProblem(){
@@ -20,6 +16,7 @@ SalesmanProblem::~SalesmanProblem(){
         delete [] costMatrix[i];
 
     delete [] costMatrix;
+    delete queue;
 }
 
 void SalesmanProblem::readFromFile(string filename) {
@@ -70,7 +67,7 @@ void SalesmanProblem::generate(int citiesQuantity) {
 //    display();
 }
 
-void SalesmanProblem::bisectionConstraintsMethod() {
+void SalesmanProblem::branchAndBoundAlgorithm() {
     int min, lowerLimit = 0, zeroIndex = 0;
     int *minTab;
     int *rowsIndexes = new int[size];
@@ -173,12 +170,11 @@ void SalesmanProblem::bisectionConstraintsMethod() {
                     }
                 } else if (matrix[j][i] < min)
                     min = matrix[j][i];
-
             }
             minTab[localSize + i] = min;
         }
 
-        int max, maxIndex = 0, displacement = 0;
+        int max, maxIndex = 0;
 
         max = findMax(minTab, 2*localSize, &maxIndex);
 
@@ -240,6 +236,9 @@ void SalesmanProblem::bisectionConstraintsMethod() {
         delete [] matrix[i];
 
     delete [] matrix;
+    delete [] rowsIndexes;
+    delete [] columnIndexes;
+
     int sum = 0;
 
     for(int i=0; i<size-2; i++){
@@ -250,6 +249,10 @@ void SalesmanProblem::bisectionConstraintsMethod() {
 
     cout<<"Calkowity koszt drogi = "<<sum<<endl;
     system("pause");
+}
+
+void SalesmanProblem::reduceRows(int** matrix, int size, int* minTab){
+
 }
 
 void SalesmanProblem::blockConnection(int** matrix, int size, int* rTab, int* cTab, int row, int column) {

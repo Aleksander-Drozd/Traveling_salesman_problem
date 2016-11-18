@@ -37,7 +37,7 @@ void showMenu() {
                 break;
             }
             case 3:{
-                salesmanProblem->bisectionConstraintsMethod();
+                salesmanProblem->branchAndBoundAlgorithm();
                 break;
             }
             case 4:{
@@ -46,7 +46,7 @@ void showMenu() {
             }
             case 5:{
                 salesmanProblem -> readFromFile("tsp10.txt");
-                salesmanProblem->bisectionConstraintsMethod();
+                salesmanProblem->branchAndBoundAlgorithm();
             }
         }
     }
@@ -70,7 +70,7 @@ void test(){
         TSP -> generate(citiesQuantity);
 
         QueryPerformanceCounter(&startTime);
-        TSP -> bisectionConstraintsMethod();
+        TSP->branchAndBoundAlgorithm();
         QueryPerformanceCounter(&endTime);
         delta.QuadPart = endTime.QuadPart - startTime.QuadPart;
         time += ((double)delta.QuadPart) / clockFrequency.QuadPart;
