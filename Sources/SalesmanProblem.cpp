@@ -4,7 +4,6 @@
 #include <cstring>
 #include <ctime>
 #include "../Headers/SalesmanProblem.h"
-#include "../Headers/PriorityQueue.h"
 
 SalesmanProblem::SalesmanProblem(){
     costMatrix = NULL;
@@ -69,162 +68,53 @@ void SalesmanProblem::generate(int citiesQuantity) {
 }
 
 void SalesmanProblem::branchAndBoundAlgorithm() {
-    int min, lowerLimit = 0, zeroIndex = 0;
+    int lowerBound = 0;
     int *minTab;
-    int *rowsIndexes = new int[size];
-    int *columnIndexes = new int[size];
-    int localSize = size;
-    int **matrix = new int*[size];
-    int pathSize = 0;
+    int localSize;
 
-    
-
-    for(int i=0; i<size; i++) {
-        matrix[i] = new int [size];
-        memcpy(matrix[i], costMatrix[i], size*sizeof(int));
-    }
-
-    for (int i = 0; i < size; i++) {
-        rowsIndexes[i] = i;
-        columnIndexes[i] = i;
-    }
+    Solution* solution = new Solution(costMatrix, size, lowerBound);
+    localSize = solution -> getSize();
 
     while(localSize != 2){
         minTab = new int[2 * localSize];
 
         //min szukane i odejmowane w wierszach
-        reduceRows(matrix, localSize, minTab);
-        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
+        solution -> reduceRows(minTab);
+        solution -> display();
 
         //min szukane i odejmowane w kolumnach
-        reduceColumns(matrix, localSize, minTab);
-        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
+        solution -> reduceColumns(minTab);
+        solution -> display();
 
         //sumowanie dolnego ograniczenia
         for (int i = 0; i < 2 * localSize; i++) {
             cout << minTab[i] << " ";
-            lowerLimit += minTab[i];
+            lowerBound += minTab[i];
         }
-        cout << "LB:" << lowerLimit << endl;
+        cout << "LB:" << lowerBound << endl;
+        solution -> setLowerBound(lowerBound);
 
-        bool wasZero;
         //szukanie min w wierszach bez zer*
-        for (int i = 0; i < localSize; i++) {
-            min = INT_MAX;
-            wasZero = false;
-            for (int j = 0; j < localSize; j++) {
-                if (matrix[i][j] == -1)
-                    continue;
-                if (matrix[i][j] == 0) {
-                    if (wasZero) {
-                        min = 0;
-                        break;
-                    } else {
-                        wasZero = true;
-                        continue;
-                    }
-                } else if (matrix[i][j] < min)
-                    min = matrix[i][j];
-            }
-            minTab[i] = min;
-        }
+        solution -> findRowsMinimum(minTab);
 
         //szukanie min w kolumnach bez zer*
-        for (int i = 0; i < localSize; i++) {
-            min = INT_MAX;
-            wasZero = false;
-            for (int j = 0; j < localSize; j++) {
-                if (matrix[j][i] == -1)
-                    continue;
-                if (matrix[j][i] == 0) {
-                    if (wasZero) {
-                        min = 0;
-                        break;
-                    } else {
-                        wasZero = true;
-                        continue;
-                    }
-                } else if (matrix[j][i] < min)
-                    min = matrix[j][i];
-            }
-            minTab[localSize + i] = min;
-        }
+        solution -> findColumnsMinimum(minTab);
 
-        int max, maxIndex = 0;
-
+        int max, maxIndex;
         max = findMax(minTab, 2*localSize, &maxIndex);
 
-        connection = new Connection();
-
         //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
-        if (maxIndex < localSize) {
-            //szukanie zera w wierszu z minimum
-            for (int i = 0; i < localSize; i++) {
-                if(matrix[maxIndex][i] == 0){
-                    zeroIndex = i;
-                    break;
-                }
-            }
+        solution -> determineConnection(maxIndex);
 
-            connection -> c1 = rowsIndexes[maxIndex];
-            connection -> c2 = columnIndexes[zeroIndex];
-            path[pathSize] = connection;
-            cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
-            costMatrix[columnIndexes[zeroIndex]][rowsIndexes[maxIndex]] = -1;
-            blockConnection(matrix, localSize, rowsIndexes, columnIndexes, rowsIndexes[maxIndex], columnIndexes[zeroIndex]);
-            matrix = downgradeMatrix(matrix, localSize, maxIndex, zeroIndex);
-            rowsIndexes = downgradeArray(rowsIndexes, localSize, maxIndex);
-            columnIndexes = downgradeArray(columnIndexes, localSize, zeroIndex);
-        } else {
-            maxIndex -= localSize;
-            //szukanie zera w kolumnie z minimum
-            for (int i = 0; i < localSize; i++) {
-                if(matrix[i][maxIndex] == 0){
-                    zeroIndex = i;
-                    break;
-                }
-            }
-
-            connection -> c1 = rowsIndexes[zeroIndex];
-            connection -> c2 = columnIndexes[maxIndex];
-            cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
-            costMatrix[columnIndexes[maxIndex]][rowsIndexes[zeroIndex]] = -1;
-            blockConnection(matrix, localSize, rowsIndexes, columnIndexes, rowsIndexes[zeroIndex], columnIndexes[maxIndex]);
-            matrix = downgradeMatrix(matrix, localSize, zeroIndex, maxIndex);
-            rowsIndexes = downgradeArray(rowsIndexes, localSize, zeroIndex);
-            columnIndexes = downgradeArray(columnIndexes, localSize, maxIndex);
-        }
-
-        localSize--;
-        lowerLimit += max;
-        path[pathSize] = connection;
-
-        //cout<<"Oryginal"<<endl;
-        //display();
         cout<<"Pomniejszona"<<endl;
-        smartDisplay(matrix, rowsIndexes, columnIndexes, localSize);
+        solution -> display();
 
+        localSize = solution -> getSize();
         delete [] minTab;
-        pathSize++;
     }
 
-    for(int i=0; i<localSize; i++)
-        delete [] matrix[i];
-
-    delete [] matrix;
-    delete [] rowsIndexes;
-    delete [] columnIndexes;
-
-    int sum = 0;
-
-    for(int i=0; i<size-2; i++){
-        cout<<"("<<path[i] -> c1<<", "<<path[i] -> c2<<") - ";
-        cout<<costMatrix[path[i] -> c1][path[i] -> c2]<<endl;
-        sum += costMatrix[path[i] -> c1][path[i] -> c2];
-    }
-
-    cout<<"Calkowity koszt drogi = "<<sum<<endl;
-    system("pause");
+    display();
+    solution -> displayRoute(costMatrix);
 }
 
 int SalesmanProblem::findMaxIndex(int* tab, int size, int max, int displacement) {

@@ -14,6 +14,7 @@ private:
     int size;
     int lowerBound;
     int id;
+    int routeLength;
     struct Connection{
         int c1;
         int c2;
@@ -28,8 +29,23 @@ public:
     void blockConnection(int, int);
     void downgradeMatrix(int, int);
     int* downgradeArray(int*, int);
+    void findRowsMinimum(int*);
+    void findColumnsMinimum(int*);
+    void determineConnection(int);
     void display();
+    void displayRoute(int**);
+    Solution* createCopy();
     ~Solution();
+
+    int getLowerBound();
+
+    void setLowerBound(int);int getSize();
+    void setMatrix(int**);
+    void setSize(int size);
+    void setRouteLength(int routeLength);
+    void setRoute(Connection **route);
+    void setRowIndexes(int*);
+    void setColumnIndexes(int*);
 };
 
 

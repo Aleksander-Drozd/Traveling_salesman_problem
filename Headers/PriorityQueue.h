@@ -13,7 +13,7 @@ class PriorityQueue {
 public:
     PriorityQueue();
     ~PriorityQueue();
-    void add(int**, int*, int*, int, int);
+    void add(Solution*);
     void orderAfterAdding();
     void remove ();
     void orderAfterRemoving();

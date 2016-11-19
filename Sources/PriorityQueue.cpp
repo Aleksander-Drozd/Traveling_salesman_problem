@@ -1,12 +1,9 @@
-//
-// Created by John on 18-Nov-16.
-//
-
 #include "../Headers/PriorityQueue.h"
 
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <cstring>
 
 using namespace std;
 
@@ -26,28 +23,19 @@ PriorityQueue::~PriorityQueue() {
     delete [] root;
 }
 
-void PriorityQueue::add(int** matrix, int* rowIndexes, int* columnIndexes, int matrixSize, int lowerBound) {
-    TreeNode** tree;
+void PriorityQueue::add(Solution* solution) {
+    Solution** tree;
 
-    tree = new TreeNode* [size + 1];
+    tree = new Solution* [size + 1];
 
     for(int i=0; i<size; i++) {
-        tree[i] = new TreeNode;
-        tree[i] -> matrix = root[i] -> matrix;
-        tree[i] -> rowIndexes = root[i] -> rowIndexes;
-        tree[i] -> columnIndexes = root[i] -> columnIndexes;
-        tree[i] -> size = root[i] -> size;
-        tree[i] -> lowerBound = root[i] -> lowerBound;
+        tree[i] = new Solution;
+        memcpy(tree[i], root[i], sizeof(Solution));
 
         delete root[i];
     }
 
-    tree[size] = new TreeNode;
-    tree[size] -> matrix =  matrix;
-    tree[size] -> rowIndexes = rowIndexes;
-    tree[size] -> columnIndexes = columnIndexes;
-    tree[size] -> size = matrixSize;
-    tree[size] -> lowerBound = lowerBound;
+    tree[size] = solution;
 
     delete [] root;
     root = tree;
@@ -59,9 +47,9 @@ void PriorityQueue::orderAfterAdding()
 {
     int node = size - 1;
     int parent = (size-1)/2;
-    TreeNode* pom;
+    Solution* pom;
 
-    while(root[node] -> lowerBound < root[parent] -> lowerBound) {
+    while(root[node] -> getLowerBound() < root[parent] -> getLowerBound()) {
         pom = root[parent];
         root[parent] = root[node];
         root[node] = pom;
@@ -94,10 +82,10 @@ void PriorityQueue::orderAfterRemoving() {
     int rightChild = 2*index + 2;
     int leftChild = 2*index + 1;
     int parent = (index-1)/2;
-    TreeNode* pom;
+    Solution* pom;
 
-    if(root[index] -> lowerBound < root[parent] -> lowerBound) {
-        while(root[index] -> lowerBound < root[parent] -> lowerBound) {
+    if(root[index] -> getLowerBound() < root[parent] -> getLowerBound()) {
+        while(root[index] -> getLowerBound() < root[parent] -> getLowerBound()) {
             pom = root[parent];
             root[parent] = root[index];
             root[index] = pom;
@@ -111,7 +99,7 @@ void PriorityQueue::orderAfterRemoving() {
         return;
 
     if(rightChild >= size) {
-        if(root[leftChild] -> lowerBound < root[index] -> lowerBound) {
+        if(root[leftChild] -> getLowerBound() < root[index] -> getLowerBound()) {
             pom = root[index];
             root[index] = root[leftChild];
             root[leftChild] = pom;
@@ -119,8 +107,8 @@ void PriorityQueue::orderAfterRemoving() {
         return;
     }
 
-    while(root[index] -> lowerBound > root[leftChild] -> lowerBound || root[index] -> lowerBound > root[rightChild] -> lowerBound) {
-        if(root[rightChild] -> lowerBound < root[leftChild] -> lowerBound) {
+    while(root[index] -> getLowerBound() > root[leftChild] -> getLowerBound() || root[index] -> getLowerBound() > root[rightChild] -> getLowerBound()) {
+        if(root[rightChild] -> getLowerBound() < root[leftChild] -> getLowerBound()) {
             pom = root[rightChild];
             root[rightChild] = root[index];
             root[index] = pom;
@@ -140,7 +128,7 @@ void PriorityQueue::orderAfterRemoving() {
             return;
 
         if(rightChild >= size) {
-            if(root[index] -> lowerBound > root[leftChild] -> lowerBound) {
+            if(root[index] -> getLowerBound() > root[leftChild] -> getLowerBound()) {
                 pom = root[index];
                 root[index] = root[leftChild];
                 root[leftChild] = pom;
@@ -150,7 +138,7 @@ void PriorityQueue::orderAfterRemoving() {
     }
 }
 
-PriorityQueue::TreeNode* PriorityQueue::getFirst() {
+Solution* PriorityQueue::getFirst() {
     return root[0];
 }
 
@@ -172,7 +160,7 @@ void PriorityQueue::printBT(string sp, string sn, int v) {
 
         s = s.substr(0,sp.length()-2);
 
-        cout << s << sn << root[v] -> lowerBound << "-" << root[v] -> lowerBound << "-" << root[v] -> lowerBound << endl;
+        cout << s << sn << root[v] -> getLowerBound() << "-" << root[v] -> getLowerBound() << "-" << root[v] -> getLowerBound() << endl;
 
         s = sp;
         if(sn == cl) s[s.length() - 2] = ' ';
