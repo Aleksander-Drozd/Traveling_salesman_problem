@@ -70,6 +70,7 @@ void SalesmanProblem::generate(int citiesQuantity) {
 void SalesmanProblem::branchAndBoundAlgorithm() {
     int *minTab;
     int localSize, lowerBound, rowIndex, minIdex;
+    Solution::Connection *connection = new Solution::Connection();
 
     Solution *solution2, *solution = new Solution(costMatrix, size);
     localSize = size;
@@ -87,13 +88,14 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         max = findMax(minTab, 2*localSize, &maxIndex);
         delete [] minTab;
         //skrocenie macierzy
-        rowIndex = solution -> determineConnection(maxIndex);
+        connection = solution -> determineConnection(maxIndex);
         solution -> display();
 
         minTab = new int[2 * localSize];
 
-        solution2 -> blockConnection(rowIndex);
-        solution2 -> setLowerBound(solution2 -> getLowerBound() + solution2 -> getMinFromRow(rowIndex));
+        solution2 -> blockConnection(connection -> c1);
+        solution2 -> setLowerBound(solution2 -> getLowerBound() +
+                                           solution2 -> getMinFromRow(connection -> c1) + solution2 -> getMinFromColumn(connection -> c2));
 
         //min szukane i odejmowane w wierszach
         solution -> reduceRows(minTab);
@@ -121,6 +123,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         cout << "LB:" << solution -> getLowerBound()<<endl;
     }
 
+    delete connection;
     display();
     solution -> displayRoute(costMatrix);
 }

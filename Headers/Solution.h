@@ -7,6 +7,11 @@
 
 
 class Solution {
+public:
+    struct Connection{
+        int c1;
+        int c2;
+    };
 private:
     int** matrix;
     int* rowIndexes;
@@ -14,10 +19,6 @@ private:
     int size;
     int lowerBound;
     int routeLength;
-    struct Connection{
-        int c1;
-        int c2;
-    };
 
     Connection** route;
 public:
@@ -28,11 +29,13 @@ public:
     void blockConnection(int, int);
     void blockConnection(int);
     int getMinFromRow(int);
+    int getMinFromColumn(int);
+    Connection* checkForSubtour();
     void downgradeMatrix(int, int);
     int* downgradeArray(int*, int);
     void findRowsMinimum(int*);
     void findColumnsMinimum(int*);
-    int determineConnection(int);
+    Connection* determineConnection(int);
     void display();
     void displayRoute(int**);
     Solution* createCopy();

@@ -134,7 +134,7 @@ void Solution::findColumnsMinimum(int* minTab) {
     }
 }
 
-int Solution::determineConnection(int maxIndex) {
+Solution::Connection* Solution::determineConnection(int maxIndex) {
     //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
     int zeroIndex = 0, rowIndex;
     Connection* connection = new Connection();
@@ -182,7 +182,7 @@ int Solution::determineConnection(int maxIndex) {
     size--;
     route[routeLength] = connection;
     routeLength++;
-    return rowIndex;
+    return connection;
 }
 
 void Solution::blockConnection(int row, int column) {
@@ -199,6 +199,7 @@ void Solution::blockConnection(int row, int column) {
     matrix[r][c] = -1;
 }
 
+//wstawia -1 w miejsce zera w podanym wierszu
 void Solution::blockConnection(int row) {
     for(int i=0; i<size; i++)
         if(matrix[row][i] == 0){
@@ -215,6 +216,52 @@ int Solution::getMinFromRow(int rowIndex) {
             min = matrix[rowIndex][i];
 
     return min;
+}
+
+int Solution::getMinFromColumn(int columnIndex) {
+    int min = INT_MAX;
+
+    for(int i=0; i<size; i++)
+        if(matrix[i][columnIndex] != -1 && matrix[i][columnIndex] < min)
+            min = matrix[columnIndex][i];
+
+    return min;
+}
+
+Solution::Connection *Solution::checkForSubtour() {
+    int city;
+    Connection* forbiddenConnection;
+    city = route[routeLength-1] -> c2;
+
+    for(int i=0; i<routeLength; i++)
+        if(city == route[i] -> c1){
+            city = route[i] -> c2;
+            i = -1;
+        }
+
+    if(city != route[routeLength-1] -> c2){
+        forbiddenConnection = new Connection();
+        forbiddenConnection -> c1 = city;
+        forbiddenConnection -> c2 = route[routeLength-1] -> c1;
+        return forbiddenConnection;
+    }
+
+    city = route[routeLength-1] -> c1;
+
+    for(int i=0; i<routeLength; i++)
+        if(city == route[i] -> c2){
+            city = route[i] -> c1;
+            i = -1;
+        }
+
+    if(city != route[routeLength-1] -> c1){
+        forbiddenConnection = new Connection();
+        forbiddenConnection -> c1 = route[routeLength-1] -> c2;
+        forbiddenConnection -> c2 = city;
+        return forbiddenConnection;
+    }
+
+    return nullptr;
 }
 
 void Solution::downgradeMatrix(int rowIndex, int columnIndex) {

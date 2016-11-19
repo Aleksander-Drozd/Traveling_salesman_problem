@@ -11,11 +11,6 @@
 using namespace std;
 
 class SalesmanProblem {
-public:
-    struct Connection{
-        int c1;
-        int c2;
-    };
 private:
     int **costMatrix;
     int size;
