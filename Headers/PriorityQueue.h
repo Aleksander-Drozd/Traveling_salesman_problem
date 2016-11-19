@@ -10,16 +10,6 @@
 using namespace std;
 
 class PriorityQueue {
-public:
-    PriorityQueue();
-    ~PriorityQueue();
-    void add(Solution*);
-    void orderAfterAdding();
-    void remove ();
-    void orderAfterRemoving();
-    Solution* getFirst();
-    void display();
-    void printBT(string sp, string sn, int v);
 private:
     int id;
     int size;
@@ -27,6 +17,16 @@ private:
     string cl;
     string cr;
     string cp;
+    void orderAfterAdding();
+    void orderAfterRemoving();
+    void printBT(string sp, string sn, int v);
+public:
+    PriorityQueue();
+    void add(Solution*);
+    void remove();
+    Solution* getFirst();
+    void display();
+    ~PriorityQueue();
 };
 
 

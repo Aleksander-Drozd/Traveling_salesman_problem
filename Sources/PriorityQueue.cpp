@@ -29,7 +29,7 @@ void PriorityQueue::add(Solution* solution) {
     tree = new Solution* [size + 1];
 
     for(int i=0; i<size; i++) {
-        tree[i] = new Solution;
+        tree[i] = new Solution();
         memcpy(tree[i], root[i], sizeof(Solution));
 
         delete root[i];
@@ -160,7 +160,7 @@ void PriorityQueue::printBT(string sp, string sn, int v) {
 
         s = s.substr(0,sp.length()-2);
 
-        cout << s << sn << root[v] -> getLowerBound() << "-" << root[v] -> getLowerBound() << "-" << root[v] -> getLowerBound() << endl;
+        cout << s << sn << root[v] -> getLowerBound() << endl;
 
         s = sp;
         if(sn == cl) s[s.length() - 2] = ' ';

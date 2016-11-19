@@ -30,7 +30,6 @@ public:
     int findMax(int*, int, int*);
     int findMaxIndex(int*, int, int, int);
     void display();
-    void smartDisplay(int**, int*, int*, int);
 };
 
 

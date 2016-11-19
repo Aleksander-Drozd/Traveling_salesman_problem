@@ -12,15 +12,13 @@ Solution::Solution() {
     columnIndexes = NULL;
     size = 0;
     lowerBound = 0;
-    id = 0;
     routeLength = 0;
 }
 
-Solution::Solution(int** originalMatrix, int s, int LB) {
+Solution::Solution(int** originalMatrix, int s) {
     size = s;
     routeLength = 0;
-    lowerBound = LB;
-    id = 0;
+    lowerBound = 0;
     route = new Connection*[size-2];
 
     rowIndexes = new int[size];
@@ -57,6 +55,7 @@ void Solution::reduceRows(int* minTab) {
                 min = matrix[i][j];
 
         cout << min << endl;
+        lowerBound += min;
         minTab[i] = min;
 
         for (int j = 0; j < size; j++) {
@@ -76,6 +75,7 @@ void Solution::reduceColumns(int* minTab) {
                 min = matrix[j][i];
 
         cout << min << endl;
+        lowerBound += min;
         minTab[size + i] = min;
         for (int j = 0; j < size; j++) {
             if (matrix[j][i] != -1)
@@ -134,9 +134,9 @@ void Solution::findColumnsMinimum(int* minTab) {
     }
 }
 
-void Solution::determineConnection(int maxIndex) {
+int Solution::determineConnection(int maxIndex) {
     //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
-    int zeroIndex = 0;
+    int zeroIndex = 0, rowIndex;
     Connection* connection = new Connection();
 
     if (maxIndex < size) {
@@ -153,10 +153,11 @@ void Solution::determineConnection(int maxIndex) {
         route[routeLength] = connection;
         cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
         //costMatrix[columnIndexes[zeroIndex]][rowIndexes[maxIndex]] = -1;
-        blockConnection(rowIndexes[maxIndex], columnIndexes[zeroIndex]);
+        blockConnection(columnIndexes[zeroIndex], rowIndexes[maxIndex]);
         downgradeMatrix(maxIndex, zeroIndex);
         rowIndexes = downgradeArray(rowIndexes, maxIndex);
         columnIndexes = downgradeArray(columnIndexes, zeroIndex);
+        rowIndex = maxIndex;
     } else {
         maxIndex -= size;
         //szukanie zera w kolumnie z minimum
@@ -171,29 +172,49 @@ void Solution::determineConnection(int maxIndex) {
         connection -> c2 = columnIndexes[maxIndex];
         cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
         //costMatrix[columnIndexes[maxIndex]][rowIndexes[zeroIndex]] = -1;
-        blockConnection(rowIndexes[zeroIndex], columnIndexes[maxIndex]);
+        blockConnection(columnIndexes[maxIndex], rowIndexes[zeroIndex]);
         downgradeMatrix(zeroIndex, maxIndex);
         rowIndexes = downgradeArray(rowIndexes, zeroIndex);
         columnIndexes = downgradeArray(columnIndexes, maxIndex);
+        rowIndex = zeroIndex;
     }
 
     size--;
     route[routeLength] = connection;
     routeLength++;
+    return rowIndex;
 }
 
 void Solution::blockConnection(int row, int column) {
     int r = -1, c = -1;
 
     for(int i=0; i<size; i++){
-        if(rowIndexes[i] == column)
+        if(rowIndexes[i] == row)
             r = i;
-        if(columnIndexes[i] == row)
+        if(columnIndexes[i] == column)
             c = i;
     }
     if(r < 0 || c < 0)
         return;
     matrix[r][c] = -1;
+}
+
+void Solution::blockConnection(int row) {
+    for(int i=0; i<size; i++)
+        if(matrix[row][i] == 0){
+            matrix[row][i] = -1;
+            return;
+        }
+}
+
+int Solution::getMinFromRow(int rowIndex) {
+    int min = INT_MAX;
+
+    for(int i=0; i<size; i++)
+        if(matrix[rowIndex][i] != -1 && matrix[rowIndex][i] < min)
+            min = matrix[rowIndex][i];
+
+    return min;
 }
 
 void Solution::downgradeMatrix(int rowIndex, int columnIndex) {
@@ -268,7 +289,7 @@ Solution* Solution::createCopy() {
 
     solution -> setSize(size);
     solution -> setLowerBound(lowerBound);
-    solution->setRouteLength(routeLength);
+    solution -> setRouteLength(routeLength);
     solution -> setMatrix(matrix);
     solution -> setRowIndexes(rowIndexes);
     solution -> setColumnIndexes(columnIndexes);
@@ -309,9 +330,9 @@ void Solution::setRouteLength(int routeLength) {
 void Solution::setRoute(Connection **originalRoute) {
     route = new Connection* [size];
 
-    for(int i=0; i<size; i++) {
+    for(int i=0; i<routeLength; i++) {
         route[i] = new Connection();
-        memcpy(matrix[i], originalRoute[i], size*sizeof(Connection));
+        memcpy(route[i], originalRoute[i], sizeof(Connection));
     }
 }
 

@@ -68,15 +68,32 @@ void SalesmanProblem::generate(int citiesQuantity) {
 }
 
 void SalesmanProblem::branchAndBoundAlgorithm() {
-    int lowerBound = 0;
     int *minTab;
-    int localSize;
+    int localSize, lowerBound, rowIndex, minIdex;
 
-    Solution* solution = new Solution(costMatrix, size, lowerBound);
-    localSize = solution -> getSize();
+    Solution *solution2, *solution = new Solution(costMatrix, size);
+    localSize = size;
+    minTab = new int[2 * size];
+    solution -> reduceRows(minTab);
+    solution -> reduceColumns(minTab);
+    lowerBound = solution -> getLowerBound();
+    cout<<"Najmniejsze mozliwe LB: "<<lowerBound<<endl<<endl;
+    queue -> add(solution);
+    int max, maxIndex;
 
     while(localSize != 2){
+        solution2 = solution -> createCopy();
+
+        max = findMax(minTab, 2*localSize, &maxIndex);
+        delete [] minTab;
+        //skrocenie macierzy
+        rowIndex = solution -> determineConnection(maxIndex);
+        solution -> display();
+
         minTab = new int[2 * localSize];
+
+        solution2 -> blockConnection(rowIndex);
+        solution2 -> setLowerBound(solution2 -> getLowerBound() + solution2 -> getMinFromRow(rowIndex));
 
         //min szukane i odejmowane w wierszach
         solution -> reduceRows(minTab);
@@ -86,13 +103,10 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         solution -> reduceColumns(minTab);
         solution -> display();
 
-        //sumowanie dolnego ograniczenia
-        for (int i = 0; i < 2 * localSize; i++) {
-            cout << minTab[i] << " ";
-            lowerBound += minTab[i];
-        }
-        cout << "LB:" << lowerBound << endl;
-        solution -> setLowerBound(lowerBound);
+        queue -> add(solution2);
+        queue -> display();
+        solution = queue -> getFirst();
+        localSize = solution -> getSize();
 
         //szukanie min w wierszach bez zer*
         solution -> findRowsMinimum(minTab);
@@ -100,17 +114,11 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         //szukanie min w kolumnach bez zer*
         solution -> findColumnsMinimum(minTab);
 
-        int max, maxIndex;
-        max = findMax(minTab, 2*localSize, &maxIndex);
+        //wyswietlanie minimow
+        for (int i = 0; i < 2 * localSize; i++)
+            cout << minTab[i] << " ";
 
-        //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
-        solution -> determineConnection(maxIndex);
-
-        cout<<"Pomniejszona"<<endl;
-        solution -> display();
-
-        localSize = solution -> getSize();
-        delete [] minTab;
+        cout << "LB:" << solution -> getLowerBound()<<endl;
     }
 
     display();
@@ -163,27 +171,6 @@ void SalesmanProblem::display() {
         cout<<i<<"| ";
         for(int j=0; j<size; j++){
             cout<<costMatrix[i][j]<<" ";
-        }
-        cout<<endl;
-    }
-
-    cout<<endl;
-    system("pause");
-}
-
-void SalesmanProblem::smartDisplay(int** matrix, int* rowIndexes, int* columnIndexes, int localsize) {
-    cout<<endl<<"   ";
-    for(int i=0; i<localsize; i++)
-        cout<<columnIndexes[i]<<"  ";
-    cout<<endl<<"   ";
-    for(int i=0; i<localsize; i++)
-        cout<<"-- ";
-    cout<<endl;
-
-    for(int i=0; i<localsize; i++) {
-        cout<<rowIndexes[i]<<"| ";
-        for(int j=0; j<localsize; j++){
-            cout<<matrix[i][j]<<" ";
         }
         cout<<endl;
     }

@@ -13,7 +13,6 @@ private:
     int* columnIndexes;
     int size;
     int lowerBound;
-    int id;
     int routeLength;
     struct Connection{
         int c1;
@@ -23,15 +22,17 @@ private:
     Connection** route;
 public:
     Solution();
-    Solution(int**, int, int);
+    Solution(int**, int);
     void reduceRows(int*);
     void reduceColumns(int*);
     void blockConnection(int, int);
+    void blockConnection(int);
+    int getMinFromRow(int);
     void downgradeMatrix(int, int);
     int* downgradeArray(int*, int);
     void findRowsMinimum(int*);
     void findColumnsMinimum(int*);
-    void determineConnection(int);
+    int determineConnection(int);
     void display();
     void displayRoute(int**);
     Solution* createCopy();
