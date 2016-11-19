@@ -4,6 +4,7 @@
 #include <cstring>
 #include <ctime>
 #include "../Headers/SalesmanProblem.h"
+#include "../Headers/PriorityQueue.h"
 
 SalesmanProblem::SalesmanProblem(){
     costMatrix = NULL;
@@ -76,8 +77,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     int **matrix = new int*[size];
     int pathSize = 0;
 
-    Connection* connection;
-    Connection** path = new Connection*[size-2];
+    
 
     for(int i=0; i<size; i++) {
         matrix[i] = new int [size];
@@ -227,57 +227,6 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     system("pause");
 }
 
-void SalesmanProblem::reduceRows(int** matrix, int size, int* minTab){
-    int min;
-
-    for (int i = 0; i < size; i++) {
-        min = INT_MAX;
-        for (int j = 0; j < size; j++) {
-            if (matrix[i][j] != -1 && matrix[i][j] < min)
-                min = matrix[i][j];
-        }
-        cout << min << endl;
-        minTab[i] = min;
-
-        for (int j = 0; j < size; j++) {
-            if (matrix[i][j] != -1)
-                matrix[i][j] -= min;
-        }
-    }
-}
-
-void SalesmanProblem::reduceColumns(int** matrix, int size, int* minTab){
-    int min;
-
-    for (int i = 0; i < size; i++) {
-        min = INT_MAX;
-        for (int j = 0; j < size; j++) {
-            if (matrix[j][i] != -1 && matrix[j][i] < min)
-                min = matrix[j][i];
-        }
-        cout << min << endl;
-        minTab[size + i] = min;
-        for (int j = 0; j < size; j++) {
-            if (matrix[j][i] != -1)
-                matrix[j][i] -= min;
-        }
-    }
-}
-
-void SalesmanProblem::blockConnection(int** matrix, int size, int* rTab, int* cTab, int row, int column) {
-    int r = -1, c = -1;
-
-    for(int i=0; i<size; i++){
-        if(rTab[i] == column)
-            r = i;
-        if(cTab[i] == row)
-            c = i;
-    }
-    if(r < 0 || c < 0)
-        return;
-    matrix[r][c] = -1;
-}
-
 int SalesmanProblem::findMaxIndex(int* tab, int size, int max, int displacement) {
     for(int i=0; i<size; i++){
         if(tab[i] == max)
@@ -308,40 +257,6 @@ void SalesmanProblem::updateTab(int* tab, int size, int value) {
         if(tab[i] == value)
             tab[i] = -1;
     }
-}
-
-int** SalesmanProblem::downgradeMatrix(int** matrix, int localSize, int rowIndex, int columnIndex) {
-    int** newMatrix = new int* [localSize-1];
-    int x = 0;
-
-    for(int i=0; i<localSize; i++, x++)
-    {
-        if(i == rowIndex){
-            x--;
-            continue;
-        }
-
-        newMatrix[x] = new int[localSize - 1];
-        memcpy(newMatrix[x], matrix[i], columnIndex*sizeof(int));
-        memcpy(newMatrix[x] + columnIndex, matrix[i] + columnIndex + 1, (localSize - columnIndex - 1)*sizeof(int));
-    }
-
-    for(int i=0; i<localSize; i++){
-        delete [] matrix[i];
-    }
-    delete [] matrix;
-
-    return newMatrix;
-}
-
-int* SalesmanProblem::downgradeArray(int *array, int size, int index) {
-    int* newArray = new int[size-1];
-
-    memcpy(newArray, array, index* sizeof(int));
-    memcpy(newArray + index, array + index + 1, (size - index - 1)*sizeof(int));
-
-    delete [] array;
-    return newArray;
 }
 
 void SalesmanProblem::display() {

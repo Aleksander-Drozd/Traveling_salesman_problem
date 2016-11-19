@@ -26,17 +26,11 @@ public:
     void generate(int);
     void readFromFile(string);
     void branchAndBoundAlgorithm();
-    void reduceRows(int**, int, int*);
-    void reduceColumns(int**, int, int*);
     void updateTab(int*, int, int);
     int findMax(int*, int, int*);
     int findMaxIndex(int*, int, int, int);
-    void blockConnection(int**, int, int*, int*, int, int);
     void display();
     void smartDisplay(int**, int*, int*, int);
-private:
-    int** downgradeMatrix(int**, int, int, int);
-    int* downgradeArray(int*, int, int);
 };
 
 

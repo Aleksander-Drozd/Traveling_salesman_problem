@@ -14,6 +14,10 @@ PriorityQueue::PriorityQueue() {
     size = 0;
     root = NULL;
     id = 1;
+    cr = cl = cp = "  ";
+    cr[0] = 218; cr[1] = 196;
+    cl[0] = 192; cl[1] = 196;
+    cp[0] = 179;
 }
 
 PriorityQueue::~PriorityQueue() {
@@ -23,12 +27,12 @@ PriorityQueue::~PriorityQueue() {
 }
 
 void PriorityQueue::add(int** matrix, int* rowIndexes, int* columnIndexes, int matrixSize, int lowerBound) {
-    treeNode** tree;
+    TreeNode** tree;
 
-    tree = new treeNode* [size + 1];
+    tree = new TreeNode* [size + 1];
 
     for(int i=0; i<size; i++) {
-        tree[i] = new treeNode;
+        tree[i] = new TreeNode;
         tree[i] -> matrix = root[i] -> matrix;
         tree[i] -> rowIndexes = root[i] -> rowIndexes;
         tree[i] -> columnIndexes = root[i] -> columnIndexes;
@@ -38,7 +42,7 @@ void PriorityQueue::add(int** matrix, int* rowIndexes, int* columnIndexes, int m
         delete root[i];
     }
 
-    tree[size] = new treeNode;
+    tree[size] = new TreeNode;
     tree[size] -> matrix =  matrix;
     tree[size] -> rowIndexes = rowIndexes;
     tree[size] -> columnIndexes = columnIndexes;
@@ -55,7 +59,7 @@ void PriorityQueue::orderAfterAdding()
 {
     int node = size - 1;
     int parent = (size-1)/2;
-    treeNode* pom;
+    TreeNode* pom;
 
     while(root[node] -> lowerBound < root[parent] -> lowerBound) {
         pom = root[parent];
@@ -90,7 +94,7 @@ void PriorityQueue::orderAfterRemoving() {
     int rightChild = 2*index + 2;
     int leftChild = 2*index + 1;
     int parent = (index-1)/2;
-    treeNode* pom;
+    TreeNode* pom;
 
     if(root[index] -> lowerBound < root[parent] -> lowerBound) {
         while(root[index] -> lowerBound < root[parent] -> lowerBound) {
@@ -146,13 +150,32 @@ void PriorityQueue::orderAfterRemoving() {
     }
 }
 
-PriorityQueue::treeNode* PriorityQueue::getFirst() {
+PriorityQueue::TreeNode* PriorityQueue::getFirst() {
     return root[0];
 }
 
 void PriorityQueue::display() {
     if (root == NULL)
         return;
-    cout<<("", "", 0);
+
+    printBT("", "", 0);
     system("pause");
+}
+
+void PriorityQueue::printBT(string sp, string sn, int v) {
+    string s;
+
+    if(v < size) {
+        s = sp;
+        if(sn == cr) s[s.length() - 2] = ' ';
+        printBT(s + cp, cr, 2 * v + 2);
+
+        s = s.substr(0,sp.length()-2);
+
+        cout << s << sn << root[v] -> lowerBound << "-" << root[v] -> lowerBound << "-" << root[v] -> lowerBound << endl;
+
+        s = sp;
+        if(sn == cl) s[s.length() - 2] = ' ';
+        printBT(s + cp, cl, 2 * v + 1);
+    }
 }

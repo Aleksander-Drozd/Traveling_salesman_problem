@@ -5,29 +5,28 @@
 #ifndef TRAVELING_SALESMAN_PROBLEM_PRIORITYQUEUE_H
 #define TRAVELING_SALESMAN_PROBLEM_PRIORITYQUEUE_H
 
+#include "Solution.h"
+#include <string>
+using namespace std;
 
 class PriorityQueue {
 public:
-    struct treeNode {
-        int** matrix;
-        int* rowIndexes;
-        int* columnIndexes;
-        int size;
-        int lowerBound;
-        int id;
-    };
     PriorityQueue();
     ~PriorityQueue();
     void add(int**, int*, int*, int, int);
     void orderAfterAdding();
     void remove ();
     void orderAfterRemoving();
-    treeNode* getFirst();
+    Solution* getFirst();
     void display();
+    void printBT(string sp, string sn, int v);
 private:
     int id;
     int size;
-    treeNode** root;
+    Solution** root;
+    string cl;
+    string cr;
+    string cp;
 };
 
 
