@@ -200,8 +200,7 @@ void Solution::downgradeMatrix(int rowIndex, int columnIndex) {
     int** newMatrix = new int* [size-1];
     int x = 0;
 
-    for(int i=0; i<size; i++, x++)
-    {
+    for(int i=0; i<size; i++, x++) {
         if(i == rowIndex){
             x--;
             continue;
@@ -212,9 +211,8 @@ void Solution::downgradeMatrix(int rowIndex, int columnIndex) {
         memcpy(newMatrix[x] + columnIndex, matrix[i] + columnIndex + 1, (size - columnIndex - 1)*sizeof(int));
     }
 
-    for(int i=0; i<size; i++){
+    for(int i=0; i<size; i++)
         delete [] matrix[i];
-    }
     delete [] matrix;
 
     matrix = newMatrix;
@@ -223,7 +221,7 @@ void Solution::downgradeMatrix(int rowIndex, int columnIndex) {
 int* Solution::downgradeArray(int* array, int index) {
     int* newArray = new int[size-1];
 
-    memcpy(newArray, array, index* sizeof(int));
+    memcpy(newArray, array, index*sizeof(int));
     memcpy(newArray + index, array + index + 1, (size - index - 1)*sizeof(int));
 
     delete [] array;
@@ -234,15 +232,14 @@ int* Solution::downgradeArray(int* array, int index) {
 void Solution::display() {
     cout<<endl<<"   ";
     for(int i=0; i<size; i++)
-        cout<<i<<"  ";
+        cout<<columnIndexes[i]<<"  ";
     cout<<endl<<"   ";
     for(int i=0; i<size; i++)
         cout<<"-- ";
     cout<<endl;
 
-    for(int i=0; i<size; i++)
-    {
-        cout<<i<<"| ";
+    for(int i=0; i<size; i++) {
+        cout<<rowIndexes[i]<<"| ";
         for(int j=0; j<size; j++){
             cout<<matrix[i][j]<<" ";
         }
