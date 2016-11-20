@@ -45,6 +45,37 @@ Solution::~Solution() {
     delete [] matrix;
 }
 
+void Solution::reduce(int rowNumber, int columnNumber) {
+    int rowMin, columnMin;
+    int rowIndex = 0, columnIndex = 0;
+
+    for(int i=0; i<size; i++){
+        if(rowIndexes[i] == rowNumber)
+            rowIndex = i;
+        if(columnIndexes[i] == columnNumber)
+            columnIndex = i;
+    }
+
+    rowMin = INT_MAX;
+    columnMin = INT_MAX;
+
+    for (int i = 0; i < size; i++) {
+        if (matrix[rowIndex][i] != -1 && matrix[rowIndex][i] < rowMin)
+            rowMin = matrix[rowIndex][i];
+        if (matrix[i][columnIndex] != -1 && matrix[i][columnIndex] < columnMin)
+            columnMin = matrix[i][columnIndex];
+    }
+
+    lowerBound += rowMin + columnMin;
+
+    for (int i = 0; i < size; i++) {
+        if (matrix[rowIndex][i] != -1)
+            matrix[rowIndex][i] -= rowMin;
+        if (matrix[i][columnIndex] != -1)
+            matrix[i][columnIndex] -= columnMin;
+    }
+}
+
 void Solution::reduceRows(int* minTab) {
     int min;
 
@@ -197,58 +228,6 @@ void Solution::blockConnection(int row, int column) {
     matrix[r][c] = -1;
 }
 
-//wstawia -1 w miejsce zera w podanym wierszu
-void Solution::blockConnection(int rowNumber) {
-    int rowIndex;
-    for (int i=0; i<size; i++)
-        if(rowIndexes[i] == rowNumber){
-            rowIndex = i;
-            break;
-        }
-
-    for(int i=0; i<size; i++)
-        if(matrix[rowIndex][i] == 0){
-            matrix[rowIndex][i] = -1;
-            return;
-        }
-}
-
-int Solution::getRowIndex(int rowNumber) {
-    for(int i=0; i<size; i++)
-        if(rowIndexes[i] == rowNumber)
-            return i;
-
-    return 0;
-}
-
-int Solution::getColumnIndex(int columnNumber) {
-    for(int i=0; i<size; i++)
-        if(columnIndexes[i] == columnNumber)
-            return i;
-
-    return 0;
-}
-
-int Solution::getMinFromRow(int rowIndex) {
-    int min = INT_MAX;
-
-    for(int i=0; i<size; i++)
-        if(matrix[rowIndex][i] != -1 && matrix[rowIndex][i] < min)
-            min = matrix[rowIndex][i];
-
-    return min;
-}
-
-int Solution::getMinFromColumn(int columnIndex) {
-    int min = INT_MAX;
-
-    for(int i=0; i<size; i++)
-        if(matrix[i][columnIndex] != -1 && matrix[i][columnIndex] < min)
-            min = matrix[i][columnIndex];
-
-    return min;
-}
-
 Solution::Connection *Solution::checkForSubtour() {
     int city;
     Connection* forbiddenConnection;
@@ -337,6 +316,10 @@ void Solution::display() {
 
     cout<<endl<<"LB: "<<lowerBound<<endl;
     system("pause");
+}
+
+void Solution::computeFinalTourCost() {
+
 }
 
 void Solution::displayRoute(int** costMatrix) {

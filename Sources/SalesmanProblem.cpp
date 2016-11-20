@@ -90,10 +90,9 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         connection = solution -> determineConnection(maxIndex);
         solution -> display();
 
-        solution2 -> blockConnection(connection -> c1);
-        solution2 -> setLowerBound(solution2 -> getLowerBound() +
-                                           solution2 -> getMinFromRow(solution2 -> getRowIndex(connection -> c1)) +
-                                           solution2 -> getMinFromColumn(solution2 -> getColumnIndex(connection -> c2)));
+        solution2 -> blockConnection(connection -> c1, connection -> c2);
+        solution2 -> reduce(connection -> c1, connection -> c2);
+        
         cout<<"Alternatywna droga:"<<endl;
         solution2 -> display();
         connection = solution -> checkForSubtour();
