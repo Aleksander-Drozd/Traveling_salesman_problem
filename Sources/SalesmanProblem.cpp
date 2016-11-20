@@ -69,7 +69,7 @@ void SalesmanProblem::generate(int citiesQuantity) {
 
 void SalesmanProblem::branchAndBoundAlgorithm() {
     int *minTab;
-    int localSize, lowerBound, rowIndex, minIdex;
+    int localSize, lowerBound;
     Solution::Connection *connection = new Solution::Connection();
 
     Solution *solution2, *solution = new Solution(costMatrix, size);
@@ -93,10 +93,11 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
 
         minTab = new int[2 * localSize];
 
-        solution2 -> blockConnection(connection -> c1);
+        solution2 -> blockConnection(solution2->getRowIndex(connection->c1));
         solution2 -> setLowerBound(solution2 -> getLowerBound() +
-                                           solution2 -> getMinFromRow(connection -> c1) + solution2 -> getMinFromColumn(connection -> c2));
-
+                                           solution2 -> getMinFromRow(solution2->getRowIndex(connection->c1)) +
+                                           solution2 -> getMinFromColumn(solution2 -> getColumnIndex(connection -> c2)));
+        connection = solution -> checkForSubtour();
         //min szukane i odejmowane w wierszach
         solution -> reduceRows(minTab);
         solution -> display();

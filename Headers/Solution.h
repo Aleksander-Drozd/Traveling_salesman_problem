@@ -32,6 +32,8 @@ public:
     int getMinFromColumn(int);
     Connection* checkForSubtour();
     void downgradeMatrix(int, int);
+    int getRowIndex(int);
+    int getColumnIndex(int);
     int* downgradeArray(int*, int);
     void findRowsMinimum(int*);
     void findColumnsMinimum(int*);
@@ -42,6 +44,7 @@ public:
     ~Solution();
 
     int getLowerBound();
+    int* getRowIndexes();
 
     void setLowerBound(int);int getSize();
     void setMatrix(int**);

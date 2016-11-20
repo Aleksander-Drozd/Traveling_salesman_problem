@@ -28,12 +28,7 @@ void PriorityQueue::add(Solution* solution) {
 
     tree = new Solution* [size + 1];
 
-    for(int i=0; i<size; i++) {
-        tree[i] = new Solution();
-        memcpy(tree[i], root[i], sizeof(Solution));
-
-        delete root[i];
-    }
+    memcpy(tree, root, size*sizeof(Solution*));
 
     tree[size] = solution;
 

@@ -136,7 +136,7 @@ void Solution::findColumnsMinimum(int* minTab) {
 
 Solution::Connection* Solution::determineConnection(int maxIndex) {
     //szukanie 0 w wierszu/kolumnie zawierajacej maksymalne minimim
-    int zeroIndex = 0, rowIndex;
+    int zeroIndex = 0;
     Connection* connection = new Connection();
 
     if (maxIndex < size) {
@@ -157,7 +157,6 @@ Solution::Connection* Solution::determineConnection(int maxIndex) {
         downgradeMatrix(maxIndex, zeroIndex);
         rowIndexes = downgradeArray(rowIndexes, maxIndex);
         columnIndexes = downgradeArray(columnIndexes, zeroIndex);
-        rowIndex = maxIndex;
     } else {
         maxIndex -= size;
         //szukanie zera w kolumnie z minimum
@@ -176,7 +175,6 @@ Solution::Connection* Solution::determineConnection(int maxIndex) {
         downgradeMatrix(zeroIndex, maxIndex);
         rowIndexes = downgradeArray(rowIndexes, zeroIndex);
         columnIndexes = downgradeArray(columnIndexes, maxIndex);
-        rowIndex = zeroIndex;
     }
 
     size--;
@@ -208,6 +206,22 @@ void Solution::blockConnection(int row) {
         }
 }
 
+int Solution::getRowIndex(int rowNumber) {
+    for(int i=0; i<size; i++)
+        if(rowIndexes[i] == rowNumber)
+            return i;
+
+    return 0;
+}
+
+int Solution::getColumnIndex(int columnNumber) {
+    for(int i=0; i<size; i++)
+        if(columnIndexes[i] == columnNumber)
+            return i;
+
+    return 0;
+}
+
 int Solution::getMinFromRow(int rowIndex) {
     int min = INT_MAX;
 
@@ -223,7 +237,7 @@ int Solution::getMinFromColumn(int columnIndex) {
 
     for(int i=0; i<size; i++)
         if(matrix[i][columnIndex] != -1 && matrix[i][columnIndex] < min)
-            min = matrix[columnIndex][i];
+            min = matrix[i][columnIndex];
 
     return min;
 }
@@ -347,6 +361,10 @@ Solution* Solution::createCopy() {
 
 int Solution::getLowerBound() {
     return lowerBound;
+}
+
+int *Solution::getRowIndexes() {
+    return rowIndexes;
 }
 
 void Solution::setLowerBound(int LB) {
