@@ -86,22 +86,21 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         solution2 = solution -> createCopy();
 
         max = findMax(minTab, 2*localSize, &maxIndex);
-        delete [] minTab;
         //skrocenie macierzy
         connection = solution -> determineConnection(maxIndex);
         solution -> display();
-
-        minTab = new int[2 * localSize];
 
         solution2 -> blockConnection(connection -> c1);
         solution2 -> setLowerBound(solution2 -> getLowerBound() +
                                            solution2 -> getMinFromRow(solution2 -> getRowIndex(connection -> c1)) +
                                            solution2 -> getMinFromColumn(solution2 -> getColumnIndex(connection -> c2)));
+        cout<<"Alternatywna droga:"<<endl;
         solution2 -> display();
         connection = solution -> checkForSubtour();
         if(connection != NULL){
             solution -> blockConnection(connection -> c1, connection -> c2);
-            solution -> setLowerBound(solution -> getLowerBound() + solution -> getMinFromRow(solution -> getRowIndex(connection -> c1)));
+            //solution -> setLowerBound(solution -> getLowerBound() + solution -> getMinFromRow(solution -> getRowIndex(connection -> c1)));
+            cout<<"Zablokowany cykl"<<endl;
             solution -> display();
         }
 
@@ -117,6 +116,8 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         queue -> add(solution2);
         queue -> display();
         solution = queue -> getFirst();
+
+        cout<<"Pracuje na:"<<endl;
         solution -> display();
         localSize = solution -> getSize();
 
