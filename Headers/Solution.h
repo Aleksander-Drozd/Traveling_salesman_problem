@@ -44,7 +44,6 @@ public:
     ~Solution();
 
     int getLowerBound();
-    int* getRowIndexes();
 
     void setLowerBound(int);int getSize();
     void setMatrix(int**);

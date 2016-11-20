@@ -93,11 +93,18 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
 
         minTab = new int[2 * localSize];
 
-        solution2 -> blockConnection(solution2->getRowIndex(connection->c1));
+        solution2 -> blockConnection(connection -> c1);
         solution2 -> setLowerBound(solution2 -> getLowerBound() +
-                                           solution2 -> getMinFromRow(solution2->getRowIndex(connection->c1)) +
+                                           solution2 -> getMinFromRow(solution2 -> getRowIndex(connection -> c1)) +
                                            solution2 -> getMinFromColumn(solution2 -> getColumnIndex(connection -> c2)));
+        solution2 -> display();
         connection = solution -> checkForSubtour();
+        if(connection != NULL){
+            solution -> blockConnection(connection -> c1, connection -> c2);
+            solution -> setLowerBound(solution -> getLowerBound() + solution -> getMinFromRow(solution -> getRowIndex(connection -> c1)));
+            solution -> display();
+        }
+
         //min szukane i odejmowane w wierszach
         solution -> reduceRows(minTab);
         solution -> display();
@@ -106,6 +113,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         solution -> reduceColumns(minTab);
         solution -> display();
 
+        queue -> orderAfterRemoving();
         queue -> add(solution2);
         queue -> display();
         solution = queue -> getFirst();

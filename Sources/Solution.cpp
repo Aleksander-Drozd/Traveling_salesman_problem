@@ -198,10 +198,17 @@ void Solution::blockConnection(int row, int column) {
 }
 
 //wstawia -1 w miejsce zera w podanym wierszu
-void Solution::blockConnection(int row) {
+void Solution::blockConnection(int rowNumber) {
+    int rowIndex;
+    for (int i=0; i<size; i++)
+        if(rowIndexes[i] == rowNumber){
+            rowIndex = rowIndexes[i];
+            break;
+        }
+
     for(int i=0; i<size; i++)
-        if(matrix[row][i] == 0){
-            matrix[row][i] = -1;
+        if(matrix[rowIndex][i] == 0){
+            matrix[rowIndex][i] = -1;
             return;
         }
 }
@@ -328,7 +335,7 @@ void Solution::display() {
         cout<<endl;
     }
 
-    cout<<endl;
+    cout<<endl<<"LB: "<<lowerBound<<endl;
     system("pause");
 }
 
@@ -361,10 +368,6 @@ Solution* Solution::createCopy() {
 
 int Solution::getLowerBound() {
     return lowerBound;
-}
-
-int *Solution::getRowIndexes() {
-    return rowIndexes;
 }
 
 void Solution::setLowerBound(int LB) {
@@ -408,5 +411,5 @@ void Solution::setRowIndexes(int *originalRowIndexes) {
 
 void Solution::setColumnIndexes(int* originalColumnIndexes) {
     columnIndexes = new int [size];
-    memcpy(rowIndexes, originalColumnIndexes, size*sizeof(int));
+    memcpy(columnIndexes, originalColumnIndexes, size*sizeof(int));
 }

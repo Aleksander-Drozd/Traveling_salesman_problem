@@ -18,10 +18,10 @@ private:
     string cr;
     string cp;
     void orderAfterAdding();
-    void orderAfterRemoving();
     void printBT(string sp, string sn, int v);
 public:
     PriorityQueue();
+    void orderAfterRemoving();
     void add(Solution*);
     void remove();
     Solution* getFirst();
