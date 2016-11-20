@@ -19,7 +19,6 @@ private:
     int size;
     int lowerBound;
     int routeLength;
-
     Connection** route;
 public:
     Solution();

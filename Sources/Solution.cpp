@@ -202,7 +202,7 @@ void Solution::blockConnection(int rowNumber) {
     int rowIndex;
     for (int i=0; i<size; i++)
         if(rowIndexes[i] == rowNumber){
-            rowIndex = rowIndexes[i];
+            rowIndex = i;
             break;
         }
 

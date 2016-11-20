@@ -107,16 +107,17 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
 
         //min szukane i odejmowane w wierszach
         solution -> reduceRows(minTab);
-        solution -> display();
+        //solution -> display();
 
         //min szukane i odejmowane w kolumnach
         solution -> reduceColumns(minTab);
-        solution -> display();
+        //solution -> display();
 
         queue -> orderAfterRemoving();
         queue -> add(solution2);
         queue -> display();
         solution = queue -> getFirst();
+        solution -> display();
         localSize = solution -> getSize();
 
         //szukanie min w wierszach bez zer*
@@ -124,15 +125,10 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
 
         //szukanie min w kolumnach bez zer*
         solution -> findColumnsMinimum(minTab);
-
-        //wyswietlanie minimow
-        for (int i = 0; i < 2 * localSize; i++)
-            cout << minTab[i] << " ";
-
-        cout << "LB:" << solution -> getLowerBound()<<endl;
     }
 
     delete connection;
+    delete [] minTab;
     display();
     solution -> displayRoute(costMatrix);
 }
