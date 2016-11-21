@@ -371,8 +371,7 @@ void Solution::displayRoute(int** costMatrix) {
     for(int i=0, j=0; i<routeLength, j<routeLength; i++)
         if(city == route[i] -> c1){
             city = route[i] -> c2;
-            i = -1;
-            j++;
+            i = -1; j++;
             cout << " -> "<< city;
         }
 

@@ -21,9 +21,7 @@ public:
     void generate(int);
     void readFromFile(string);
     void branchAndBoundAlgorithm();
-    void updateTab(int*, int, int);
-    int findMax(int*, int, int*);
-    int findMaxIndex(int*, int, int, int);
+    void findMax(int*, int, int*);
     void display();
 };
 

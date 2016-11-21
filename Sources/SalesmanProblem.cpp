@@ -69,7 +69,7 @@ void SalesmanProblem::generate(int citiesQuantity) {
 
 void SalesmanProblem::branchAndBoundAlgorithm() {
     int *minTab;
-    int localSize, lowerBound;
+    int localSize, lowerBound, maxIndex;
     Solution::Connection *connection = new Solution::Connection();
 
     Solution *solution2, *solution = new Solution(costMatrix, size);
@@ -81,12 +81,11 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     lowerBound = solution -> getLowerBound();
     cout<<"Najmniejsze mozliwe LB: "<<lowerBound<<endl<<endl;
     queue -> add(solution);
-    int max, maxIndex;
 
     while(true){
         solution2 = solution -> createCopy();
 
-        max = findMax(minTab, 2*localSize, &maxIndex);
+        findMax(minTab, 2*localSize, &maxIndex);
         //skrocenie macierzy
         connection = solution -> determineConnection(maxIndex);
         solution -> display();
@@ -152,18 +151,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     delete bestSolution;
 }
 
-int SalesmanProblem::findMaxIndex(int* tab, int size, int max, int displacement) {
-    for(int i=0; i<size; i++){
-        if(tab[i] == max)
-            if(displacement == 0)
-                return i;
-            else
-                displacement--;
-    }
-    return -1;
-}
-
-int SalesmanProblem::findMax(int* tab, int size, int *maxIndex) {
+void SalesmanProblem::findMax(int* tab, int size, int *maxIndex) {
     int max = -1;
 
     for (int i=0; i<size; i++) {
@@ -174,14 +162,6 @@ int SalesmanProblem::findMax(int* tab, int size, int *maxIndex) {
         }
     }
     cout << "Max: "<< max << endl;
-    return max;
-}
-
-void SalesmanProblem::updateTab(int* tab, int size, int value) {
-    for(int i=0; i<size; i++){
-        if(tab[i] == value)
-            tab[i] = -1;
-    }
 }
 
 void SalesmanProblem::display() {
