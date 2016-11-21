@@ -424,9 +424,7 @@ void Solution::setRoute(Connection **originalRoute) {
 
     for(int i=0; i<routeLength; i++) {
         route[i] = new Connection();
-        //memcpy(route[i], originalRoute[i], sizeof(Connection));
-        route[i] -> c1 = originalRoute[i] -> c1;
-        route[i] -> c2 = originalRoute[i] -> c2;
+        memcpy(route[i], originalRoute[i], sizeof(Connection));
     }
 }
 
