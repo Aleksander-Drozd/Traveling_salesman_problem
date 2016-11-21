@@ -364,6 +364,19 @@ void Solution::displayRoute(int** costMatrix) {
     }
 
     cout<<"Calkowity koszt drogi = "<<sum<<endl;
+    cout<<endl;
+
+    int city = route[0] -> c2;
+    cout << route[0] -> c2;
+    for(int i=0, j=0; i<routeLength, j<routeLength; i++)
+        if(city == route[i] -> c1){
+            city = route[i] -> c2;
+            i = -1;
+            j++;
+            cout << " -> "<< city;
+        }
+
+    cout<<endl;
     system("pause");
 }
 
