@@ -11,7 +11,6 @@ using namespace std;
 
 class PriorityQueue {
 private:
-    int id;
     int size;
     Solution** root;
     string cl;

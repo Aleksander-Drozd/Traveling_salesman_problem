@@ -10,7 +10,6 @@ using namespace std;
 PriorityQueue::PriorityQueue() {
     size = 0;
     root = NULL;
-    id = 1;
     cr = cl = cp = "  ";
     cr[0] = 218; cr[1] = 196;
     cl[0] = 192; cl[1] = 196;

@@ -1,10 +1,5 @@
-//
-// Created by John on 19-Nov-16.
-//
-
 #ifndef TRAVELING_SALESMAN_PROBLEM_SOLUTION_H
 #define TRAVELING_SALESMAN_PROBLEM_SOLUTION_H
-
 
 class Solution {
 public:
@@ -40,8 +35,9 @@ public:
     ~Solution();
 
     int getLowerBound();
+    int getSize();
 
-    void setLowerBound(int);int getSize();
+    void setLowerBound(int);
     void setMatrix(int**);
     void setSize(int size);
     void setRouteLength(int routeLength);
@@ -49,6 +45,5 @@ public:
     void setRowIndexes(int*);
     void setColumnIndexes(int*);
 };
-
 
 #endif //TRAVELING_SALESMAN_PROBLEM_SOLUTION_H
