@@ -85,7 +85,6 @@ void Solution::reduceRows(int* minTab) {
             if (matrix[i][j] != -1 && matrix[i][j] < min)
                 min = matrix[i][j];
 
-        cout << min << endl;
         lowerBound += min;
         minTab[i] = min;
 
@@ -105,7 +104,6 @@ void Solution::reduceColumns(int* minTab) {
             if (matrix[j][i] != -1 && matrix[j][i] < min)
                 min = matrix[j][i];
 
-        cout << min << endl;
         lowerBound += min;
         minTab[size + i] = min;
         for (int j = 0; j < size; j++) {
@@ -181,7 +179,6 @@ Solution::Connection* Solution::determineConnection(int maxIndex) {
 
         connection -> c1 = rowIndexes[maxIndex];
         connection -> c2 = columnIndexes[zeroIndex];
-        cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
         blockConnection(columnIndexes[zeroIndex], rowIndexes[maxIndex]);
         downgradeMatrix(maxIndex, zeroIndex);
         rowIndexes = downgradeArray(rowIndexes, maxIndex);
@@ -198,7 +195,6 @@ Solution::Connection* Solution::determineConnection(int maxIndex) {
 
         connection -> c1 = rowIndexes[zeroIndex];
         connection -> c2 = columnIndexes[maxIndex];
-        cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
         blockConnection(columnIndexes[maxIndex], rowIndexes[zeroIndex]);
         downgradeMatrix(zeroIndex, maxIndex);
         rowIndexes = downgradeArray(rowIndexes, zeroIndex);
@@ -360,7 +356,7 @@ void Solution::displayRoute(int** costMatrix) {
         sum += costMatrix[route[i] -> c1][route[i] -> c2];
     }
 
-    cout<<"Calkowity koszt drogi = "<<sum<<endl;
+    cout<<endl<<"Calkowity koszt drogi = "<<sum<<endl;
     cout<<endl;
 
     int city = route[0] -> c2;
@@ -424,9 +420,7 @@ void Solution::setRoute(Connection **originalRoute) {
 
     for(int i=0; i<routeLength; i++) {
         route[i] = new Connection();
-        //memcpy(route[i], originalRoute[i], sizeof(Connection));
-        route[i] -> c1 = originalRoute[i] -> c1;
-        route[i] -> c2 = originalRoute[i] -> c2;
+        memcpy(route[i], originalRoute[i], sizeof(Connection));
     }
 }
 
