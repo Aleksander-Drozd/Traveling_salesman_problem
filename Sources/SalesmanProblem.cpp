@@ -73,6 +73,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     Solution::Connection *connection = new Solution::Connection();
 
     Solution *solution2, *solution = new Solution(costMatrix, size);
+    Solution *bestSolution = NULL;
     localSize = size;
     minTab = new int[2 * size];
     solution -> reduceRows(minTab);
@@ -82,7 +83,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     queue -> add(solution);
     int max, maxIndex;
 
-    while(localSize != 2){
+    while(true){
         solution2 = solution -> createCopy();
 
         max = findMax(minTab, 2*localSize, &maxIndex);
@@ -92,7 +93,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
 
         solution2 -> blockConnection(connection -> c1, connection -> c2);
         solution2 -> reduce(connection -> c1, connection -> c2);
-        
+
         cout<<"Alternatywna droga:"<<endl;
         solution2 -> display();
         connection = solution -> checkForSubtour();
@@ -116,8 +117,25 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         queue -> display();
         solution = queue -> getFirst();
 
+        if(bestSolution != NULL && solution -> getLowerBound() > bestSolution -> getLowerBound())
+            break;
+
         cout<<"Pracuje na:"<<endl;
         solution -> display();
+
+        while(solution -> getSize() == 2){
+            solution -> computeFinalTourCost();
+
+            if(bestSolution == NULL || solution -> getLowerBound() < bestSolution -> getLowerBound())
+                bestSolution = solution -> createCopy();
+            else if(bestSolution != NULL && solution -> getLowerBound() > bestSolution -> getLowerBound())
+                break;
+
+            queue -> remove();
+            solution = queue -> getFirst();
+        }
+        if(bestSolution != NULL && solution -> getLowerBound() > bestSolution -> getLowerBound())
+            break;
         localSize = solution -> getSize();
 
         //szukanie min w wierszach bez zer*
@@ -130,7 +148,8 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     delete connection;
     delete [] minTab;
     display();
-    solution -> displayRoute(costMatrix);
+    bestSolution -> displayRoute(costMatrix);
+    delete bestSolution;
 }
 
 int SalesmanProblem::findMaxIndex(int* tab, int size, int max, int displacement) {
