@@ -316,6 +316,7 @@ void Solution::computeFinalTourCost() {
     int* tab = new int[2*size];
     reduceRows(tab);
     reduceColumns(tab);
+    delete [] tab;
 
     if(matrix[0][0]  == -1 || matrix[1][1] == -1){
         connection = new Connection();
@@ -344,7 +345,30 @@ void Solution::computeFinalTourCost() {
         routeLength++;
         return;
     }
-    delete [] tab;
+
+    if(matrix[0][0] + matrix[1][1] > matrix[0][1] + matrix[1][0]){
+        connection = new Connection();
+        connection -> c1 = rowIndexes[0];
+        connection -> c2 = columnIndexes[0];
+        route[routeLength] = connection;
+        routeLength++;
+        connection = new Connection();
+        connection -> c1 = rowIndexes[1];
+        connection -> c2 = columnIndexes[1];
+        route[routeLength] = connection;
+        routeLength++;
+    } else{
+        connection = new Connection();
+        connection -> c1 = rowIndexes[0];
+        connection -> c2 = columnIndexes[1];
+        route[routeLength] = connection;
+        routeLength++;
+        connection = new Connection();
+        connection -> c1 = rowIndexes[1];
+        connection -> c2 = columnIndexes[0];
+        route[routeLength] = connection;
+        routeLength++;
+    }
 }
 
 void Solution::displayRoute(int** costMatrix) {
