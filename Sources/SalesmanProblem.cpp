@@ -134,8 +134,9 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         solution -> findColumnsMinimum(minTab);
     }
 
-    delete [] minTab;
     bestSolution -> displayRoute(costMatrix);
+
+    delete [] minTab;
     delete bestSolution;
     delete connection;
 }
