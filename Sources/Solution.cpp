@@ -222,35 +222,53 @@ void Solution::blockConnection(int row, int column) {
 }
 
 Solution::Connection *Solution::checkForSubtour() {
-    int city;
+    int city, firstCity, lastCity;
     Connection* forbiddenConnection;
-    city = route[routeLength-1] -> c2;
+
+    lastCity = route[routeLength-1] -> c2;
 
     for(int i=0; i<routeLength; i++)
-        if(city == route[i] -> c1){
-            city = route[i] -> c2;
+        if(lastCity == route[i] -> c1){
+            lastCity = route[i] -> c2;
             i = -1;
         }
 
-    if(city != route[routeLength-1] -> c2){
+    firstCity = lastCity;
+    for (int i = 0; i < routeLength; ++i) {
+        if (firstCity == route[i] -> c2) {
+            firstCity = route[i] -> c1;
+            i = -1;
+        }
+    }
+
+    if(firstCity != lastCity){
         forbiddenConnection = new Connection();
-        forbiddenConnection -> c1 = city;
-        forbiddenConnection -> c2 = route[routeLength-1] -> c1;
+        forbiddenConnection -> c1 = lastCity;
+        forbiddenConnection -> c2 = firstCity;
         return forbiddenConnection;
     }
 
-    city = route[routeLength-1] -> c1;
+    firstCity = route[routeLength-1] -> c1;
 
     for(int i=0; i<routeLength; i++)
-        if(city == route[i] -> c2){
-            city = route[i] -> c1;
+        if(firstCity == route[i] -> c2){
+            firstCity = route[i] -> c1;
             i = -1;
         }
 
-    if(city != route[routeLength-1] -> c1){
+    lastCity = firstCity;
+
+    for (int i = 0; i < routeLength; ++i) {
+        if (firstCity == route[i] -> c1) {
+            firstCity = route[i] -> c2;
+            i = -1;
+        }
+    }
+
+    if(firstCity != lastCity){
         forbiddenConnection = new Connection();
-        forbiddenConnection -> c1 = route[routeLength-1] -> c2;
-        forbiddenConnection -> c2 = city;
+        forbiddenConnection -> c1 = firstCity;
+        forbiddenConnection -> c2 = lastCity;
         return forbiddenConnection;
     }
 
