@@ -73,7 +73,6 @@ void test(int citiesQuantity){
         QueryPerformanceCounter(&endTime);
         delta.QuadPart = endTime.QuadPart - startTime.QuadPart;
         time += ((double)delta.QuadPart) / clockFrequency.QuadPart;
-        cout<<((double)delta.QuadPart) / clockFrequency.QuadPart<<endl;
 
         delete TSP;
     }
@@ -83,19 +82,19 @@ void test(int citiesQuantity){
     cout<<"Algorytm podzialu i ograniczen: "<<endl<<endl;;
     cout<<"Ilosc miast = "<<citiesQuantity<<endl;
     cout<<"Czas "<<time<<endl<<endl;
-    system("pause");
 }
 
 int main() {
     srand(time(NULL));
-    test(33);
 
-//    test(34);
-//    test(35);
-//    test(36);
-//    test(37);
-//    test(38);
-//    test(39);
+    test(32);
+    test(33);
+    test(34);
+    test(35);
+    test(36);
+    test(37);
+    test(38);
+    system("pause");
     //showMenu();
     return 0;
 }
