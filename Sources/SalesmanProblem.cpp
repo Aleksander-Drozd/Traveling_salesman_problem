@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <climits>
 #include <cstring>
-#include <ctime>
 #include "../Headers/SalesmanProblem.h"
 
 SalesmanProblem::SalesmanProblem(){
@@ -48,7 +47,6 @@ void SalesmanProblem::readFromFile(string filename) {
 
 void SalesmanProblem::generate(int citiesQuantity) {
     int cost;
-    srand(time(NULL));
 
     size = citiesQuantity;
     costMatrix = new int *[size];
@@ -134,7 +132,7 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         solution -> findColumnsMinimum(minTab);
     }
 
-    bestSolution -> displayRoute(costMatrix);
+    //bestSolution -> displayRoute(costMatrix);
 
     delete [] minTab;
     delete bestSolution;

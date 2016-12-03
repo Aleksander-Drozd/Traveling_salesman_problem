@@ -1,5 +1,6 @@
 #include <iostream>
 #include <windows.h>
+#include <ctime>
 #include "../Headers/SalesmanProblem.h"
 
 using namespace std;
@@ -51,7 +52,7 @@ void showMenu() {
     }
 }
 
-void test(){
+void test(int citiesQuantity){
     SalesmanProblem* TSP;
 
     LARGE_INTEGER clockFrequency;
@@ -59,9 +60,8 @@ void test(){
     LARGE_INTEGER startTime, endTime;
     LARGE_INTEGER delta;
 
-    int loops = 1;
+    int loops = 30;
     double time = 0;
-    int citiesQuantity = 32;
 
     for(int i=0; i<loops; i++)
     {
@@ -69,10 +69,11 @@ void test(){
         TSP -> generate(citiesQuantity);
 
         QueryPerformanceCounter(&startTime);
-        TSP->branchAndBoundAlgorithm();
+        TSP -> branchAndBoundAlgorithm();
         QueryPerformanceCounter(&endTime);
         delta.QuadPart = endTime.QuadPart - startTime.QuadPart;
         time += ((double)delta.QuadPart) / clockFrequency.QuadPart;
+        cout<<((double)delta.QuadPart) / clockFrequency.QuadPart<<endl;
 
         delete TSP;
     }
@@ -80,13 +81,21 @@ void test(){
     time = time/loops;
 
     cout<<"Algorytm podzialu i ograniczen: "<<endl<<endl;;
-    cout<<"Ilosc miast = "<<citiesQuantity<<endl<<endl;
-    cout<<time<<endl;
+    cout<<"Ilosc miast = "<<citiesQuantity<<endl;
+    cout<<"Czas "<<time<<endl<<endl;
     system("pause");
 }
 
 int main() {
-//    test();
-    showMenu();
+    srand(time(NULL));
+    test(33);
+
+//    test(34);
+//    test(35);
+//    test(36);
+//    test(37);
+//    test(38);
+//    test(39);
+    //showMenu();
     return 0;
 }
