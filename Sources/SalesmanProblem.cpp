@@ -79,7 +79,6 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     solution -> reduceRows(minTab);
     solution -> reduceColumns(minTab);
     lowerBound = solution -> getLowerBound();
-    cout<<"Najmniejsze mozliwe LB: "<<lowerBound<<endl<<endl;
     queue -> add(solution);
 
     while(true){
@@ -88,39 +87,28 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
         findMax(minTab, 2*localSize, &maxIndex);
         //skrocenie macierzy
         connection = solution -> determineConnection(maxIndex);
-        solution -> display();
 
         solution2 -> blockConnection(connection -> c1, connection -> c2);
         solution2 -> reduce(connection -> c1, connection -> c2);
 
-        cout<<"Alternatywna droga:"<<endl;
-        solution2 -> display();
         connection = solution -> checkForSubtour();
         if(connection != NULL){
             solution -> blockConnection(connection -> c1, connection -> c2);
             delete connection;
-            cout<<"Zablokowany cykl"<<endl;
-            solution -> display();
         }
 
         //min szukane i odejmowane w wierszach
         solution -> reduceRows(minTab);
-        //solution -> display();
 
         //min szukane i odejmowane w kolumnach
         solution -> reduceColumns(minTab);
-        //solution -> display();
 
         queue -> orderAfterRemoving();
         queue -> add(solution2);
-        queue -> display();
         solution = queue -> getFirst();
 
         if(bestSolution != NULL && solution -> getLowerBound() > bestSolution -> getLowerBound())
             break;
-
-        cout<<"Pracuje na:"<<endl;
-        solution -> display();
 
         while(solution -> getSize() == 2){
             solution -> computeFinalTourCost();
@@ -147,7 +135,6 @@ void SalesmanProblem::branchAndBoundAlgorithm() {
     }
 
     delete [] minTab;
-    display();
     bestSolution -> displayRoute(costMatrix);
     delete bestSolution;
     delete connection;
@@ -157,13 +144,11 @@ void SalesmanProblem::findMax(int* tab, int size, int *maxIndex) {
     int max = -1;
 
     for (int i=0; i<size; i++) {
-        cout << tab[i] << " ";
         if (tab[i] > max) {
             max = tab[i];
             *maxIndex = i;
         }
     }
-    cout << "Max: "<< max << endl;
 }
 
 void SalesmanProblem::display() {

@@ -85,7 +85,6 @@ void Solution::reduceRows(int* minTab) {
             if (matrix[i][j] != -1 && matrix[i][j] < min)
                 min = matrix[i][j];
 
-        cout << min << endl;
         lowerBound += min;
         minTab[i] = min;
 
@@ -105,7 +104,6 @@ void Solution::reduceColumns(int* minTab) {
             if (matrix[j][i] != -1 && matrix[j][i] < min)
                 min = matrix[j][i];
 
-        cout << min << endl;
         lowerBound += min;
         minTab[size + i] = min;
         for (int j = 0; j < size; j++) {
@@ -181,7 +179,6 @@ Solution::Connection* Solution::determineConnection(int maxIndex) {
 
         connection -> c1 = rowIndexes[maxIndex];
         connection -> c2 = columnIndexes[zeroIndex];
-        cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
         blockConnection(columnIndexes[zeroIndex], rowIndexes[maxIndex]);
         downgradeMatrix(maxIndex, zeroIndex);
         rowIndexes = downgradeArray(rowIndexes, maxIndex);
@@ -198,7 +195,6 @@ Solution::Connection* Solution::determineConnection(int maxIndex) {
 
         connection -> c1 = rowIndexes[zeroIndex];
         connection -> c2 = columnIndexes[maxIndex];
-        cout<<"Usuwam ("<<connection -> c1<<", "<<connection -> c2<<")"<<endl;
         blockConnection(columnIndexes[maxIndex], rowIndexes[zeroIndex]);
         downgradeMatrix(zeroIndex, maxIndex);
         rowIndexes = downgradeArray(rowIndexes, zeroIndex);
@@ -320,6 +316,7 @@ void Solution::computeFinalTourCost() {
     int* tab = new int[2*size];
     reduceRows(tab);
     reduceColumns(tab);
+    delete [] tab;
 
     if(matrix[0][0]  == -1 || matrix[1][1] == -1){
         connection = new Connection();
@@ -348,7 +345,30 @@ void Solution::computeFinalTourCost() {
         routeLength++;
         return;
     }
-    delete [] tab;
+
+    if(matrix[0][0] + matrix[1][1] > matrix[0][1] + matrix[1][0]){
+        connection = new Connection();
+        connection -> c1 = rowIndexes[0];
+        connection -> c2 = columnIndexes[0];
+        route[routeLength] = connection;
+        routeLength++;
+        connection = new Connection();
+        connection -> c1 = rowIndexes[1];
+        connection -> c2 = columnIndexes[1];
+        route[routeLength] = connection;
+        routeLength++;
+    } else{
+        connection = new Connection();
+        connection -> c1 = rowIndexes[0];
+        connection -> c2 = columnIndexes[1];
+        route[routeLength] = connection;
+        routeLength++;
+        connection = new Connection();
+        connection -> c1 = rowIndexes[1];
+        connection -> c2 = columnIndexes[0];
+        route[routeLength] = connection;
+        routeLength++;
+    }
 }
 
 void Solution::displayRoute(int** costMatrix) {
@@ -360,7 +380,7 @@ void Solution::displayRoute(int** costMatrix) {
         sum += costMatrix[route[i] -> c1][route[i] -> c2];
     }
 
-    cout<<"Calkowity koszt drogi = "<<sum<<endl;
+    cout<<endl<<"Calkowity koszt drogi = "<<sum<<endl;
     cout<<endl;
 
     int city = route[0] -> c2;
